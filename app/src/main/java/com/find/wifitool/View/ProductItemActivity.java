@@ -83,9 +83,7 @@ public class ProductItemActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2); //your choice
         viewPager.setCurrentItem(Integer.MAX_VALUE/2, false);
 */
-
         /////////////////////////////////////////////////////
-
 
         ExpandableRelativeLayout news_container = (ExpandableRelativeLayout) findViewById(R.id.product_description_container);
         ImageButton btnExpandNews = (ImageButton) findViewById(R.id.description_expand_btn);
@@ -122,7 +120,6 @@ public class ProductItemActivity extends AppCompatActivity {
         availability_switch.setClickable(false);
         availability_switch.setChecked(true);
         changeAvailabilityTv();
-
 
         ////////////////////// description text /////////////////////
         product_description.setText(R.string.product_description);

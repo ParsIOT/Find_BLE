@@ -20,18 +20,6 @@
         <dex dex="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-24.2.1-cbafad60bb0e0a90648a35aa732bd53cec6a984c.jar" />
     </item>
     <item
-        jar="/home/hadi/Downloads/Android-Studio/android-sdk-linux/platforms/android-24/android.jar"
-        revision="24.0.2"
-        sha1="d49cc0972df7adf495d3ad3d0cf71c0ec517ace4">
-        <dex dex="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/transforms/preJackRuntimeLibraries/debug/jars/8000/40/android-b4a455ab36270a221f7ee13072f5389f352f0705.jar" />
-    </item>
-    <item
-        jar="/home/hadi/Downloads/Android-Studio/android-sdk-linux/platforms/android-24/optional/org.apache.http.legacy.jar"
-        revision="24.0.2"
-        sha1="fb7023e781abb70ed1b0442eb611fbed295cae84">
-        <dex dex="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/transforms/preJackRuntimeLibraries/debug/jars/8000/40/org.apache.http.legacy-b3ed04c3280c3155d0fa701a47677df411481daf.jar" />
-    </item>
-    <item
         jar="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/exploded-aar/com.android.support/support-fragment/24.2.1/jars/classes.jar"
         revision="24.0.2"
         sha1="b9a1ac78ad7ef3abedc4a4b30cd92bcacb939d1f">
@@ -138,6 +126,18 @@
         revision="24.0.2"
         sha1="7e4389bd133359a2ff88623ff1e4ff93d6e6f780">
         <dex dex="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/internal_impl-24.2.1-713b29342f57743df50e8536474113923bb8fa5d.jar" />
+    </item>
+    <item
+        jar="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/exploded-aar/com.github.aakira/expandable-layout/1.6.0/jars/classes.jar"
+        revision="24.0.2"
+        sha1="3cef25b344d6893e5e2d9b1ae38d180955e9d3ef">
+        <dex dex="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-f76970c64800c205cb959127ed4dc2f5c61c93a7.jar" />
+    </item>
+    <item
+        jar="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/exploded-aar/com.orhanobut/logger/2.1.1/jars/classes.jar"
+        revision="24.0.2"
+        sha1="f3da801940221b852f3a3ee82bfe2a10d39e4ffa">
+        <dex dex="/home/hadi/Downloads/Android-Studio/find-ble-lock/app/build/intermediates/transforms/preJackPackagedLibraries/debug/jars/8000/1f/classes-9e452628ed984df0d0fdb7d695b5254cbc6c8ccb.jar" />
     </item>
     <item
         jar="/home/hadi/Downloads/Android-Studio/android-sdk-linux/extras/android/m2repository/com/android/support/support-annotations/24.2.1/support-annotations-24.2.1.jar"
