@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
@@ -23,7 +24,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.find.wifitool.Utils.Utils;
 import com.find.wifitool.Utils.httpCalls.FindWiFi;
 import com.find.wifitool.Utils.httpCalls.FindWiFiImpl;
 import com.find.wifitool.internal.Constants;
@@ -38,10 +38,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static android.content.ContentValues.TAG;
 
 
 public class WifiIntentReceiver extends IntentService {
@@ -68,11 +69,8 @@ public class WifiIntentReceiver extends IntentService {
 
     private ArrayList<String> bleMacs;
     private ArrayList<Integer> bleRssi;
-    private HashMap<String, ArrayList<Integer>> hashMap;
-
 
     private Handler handler;
-
 
     private static final Set<Character> AD_HOC_HEX_VALUES =
             new HashSet<Character>(Arrays.asList('2', '6', 'a', 'e', 'A', 'E'));
@@ -89,14 +87,14 @@ public class WifiIntentReceiver extends IntentService {
         super.onCreate();
         handler = new Handler();
 
+
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         this.intent = intent;
-/*        bleMacs = new ArrayList<>();
-        bleRssi = new ArrayList<>();*/
-        hashMap = new HashMap<>();
+        bleMacs = new ArrayList<>();
+        bleRssi = new ArrayList<>();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -169,17 +167,12 @@ public class WifiIntentReceiver extends IntentService {
     }
 
     // Function to check to check the route(learn or track) and send data to server
-    private void sendPayload(String event, String serverName, JSONObject json) throws InterruptedException {
-        Log.e(TAG, "sendPayload: semaphore is acquired 1");
-        Utils.semaphore.acquire();
+    private void sendPayload(String event, String serverName, JSONObject json) {
         if (event.equalsIgnoreCase("track")) {
             Callback postTrackEvent = new Callback() {
                 @Override
                 public void onFailure(Request request, IOException e) {
                     Log.e(TAG, "Failed request: " + request, e);
-                    Log.e(TAG, "sendPayload: semaphore is released 2");
-                    Utils.semaphore.release();
-
                 }
 
                 @Override
@@ -197,9 +190,6 @@ public class WifiIntentReceiver extends IntentService {
                     } else {
                         Log.e(TAG, "Unsuccessful request: " + body);
                     }
-                    Log.e(TAG, "sendPayload: semaphore is released 3");
-                    Utils.semaphore.release();
-
                 }
             };
             client.findTrack(postTrackEvent, serverName, json);
@@ -211,23 +201,18 @@ public class WifiIntentReceiver extends IntentService {
                     Log.e(TAG, "Failed request: " + request, e);
                     Toast.makeText(getApplicationContext(), "Can't connect to server.",
                             Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "sendPayload: semaphore is released 4");
-                    Utils.semaphore.release();
-
                 }
 
                 @Override
                 public void onResponse(Response response) throws IOException {
                     String body = response.body().string();
                     Log.d(TAG, "Learning step was successful:\n" + body);
-                    Log.e(TAG, "sendPayload: semaphore is released 5");
-                    Utils.semaphore.release();
-
                 }
             };
             client.findLearn(postLearnEvent, serverName, json);
 
         }
+
     }
 
     // Broadcasting current location extracted from Response
@@ -294,25 +279,20 @@ public class WifiIntentReceiver extends IntentService {
                         mLEScanner.stopScan(mScanCallback);
                     }
 
-                    scanLeDevice(false);
                     sendBleToServer();
+                    scanLeDevice(false);
                     if (mGatt != null) {
                         mGatt.close();
                         mGatt = null;
                     }
 
+
                 }
             }, SCAN_PERIOD);
-            try {
-                Log.e(TAG, "sendPayload: semaphore is acquired 6");
-                Utils.semaphore.acquire();
-                if (Build.VERSION.SDK_INT < 21) {
-                    mBluetoothAdapter.startLeScan(mLeScanCallback);
-                } else {
-                    mLEScanner.startScan(filters, settings, mScanCallback);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (Build.VERSION.SDK_INT < 21) {
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+            } else {
+                mLEScanner.startScan(filters, settings, mScanCallback);
             }
         } else {
             if (Build.VERSION.SDK_INT < 21) {
@@ -323,32 +303,23 @@ public class WifiIntentReceiver extends IntentService {
         }
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, android.bluetooth.le.ScanResult result) {
-            Log.e(TAG, "sendPayload: semaphore is released 7");
-            Utils.semaphore.release();
             Log.i("callbackType", String.valueOf(callbackType));
             Log.i("result", result.toString());
             BluetoothDevice btDevice = result.getDevice();
+
             Log.e(TAG, "onScanResult: " + "name: " + btDevice.getName() + " rssi: " + String.valueOf(result.getRssi()) + " mac: " + btDevice.getAddress());
-/*            if (!bleMacs.contains(btDevice.getAddress())) {
+            if (!bleMacs.contains(btDevice.getAddress())) {
                 bleMacs.add(btDevice.getAddress());
                 bleRssi.add(result.getRssi());
             } else {
                 int idx = bleMacs.indexOf(btDevice.getAddress());
                 bleRssi.set(idx, (bleRssi.get(idx) + result.getRssi()) / 2);
-            }*/
-            if (hashMap.containsKey(btDevice.getAddress())) {
-                hashMap.get(btDevice.getAddress()).add(result.getRssi());
-            } else {
-                ArrayList<Integer> newArr = new ArrayList<>();
-                newArr.add(result.getRssi());
-                hashMap.put(btDevice.getAddress(), newArr);
             }
-//            connectToDevice(btDevice);
+            connectToDevice(btDevice);
         }
 
         @Override
@@ -360,8 +331,6 @@ public class WifiIntentReceiver extends IntentService {
 
         @Override
         public void onScanFailed(int errorCode) {
-            Log.e(TAG, "sendPayload: semaphore is released 8");
-            Utils.semaphore.release();
             Log.e("Scan Failed", "Error Code: " + errorCode);
         }
     };
@@ -374,13 +343,10 @@ public class WifiIntentReceiver extends IntentService {
                                      byte[] scanRecord) {
 
                     // runOnUiThread
-                    Log.e(TAG, "sendPayload: semaphore is released 9");
-                    Utils.semaphore.release();
-
 
                     Log.i("onLeScan", device.toString());
 
-//                    connectToDevice(device);
+                    connectToDevice(device);
                 }
 
 
@@ -452,8 +418,8 @@ public class WifiIntentReceiver extends IntentService {
         }
     };
 
-    public void sendBleToServer() {
 
+    public void sendBleToServer() {
         client = new FindWiFiImpl(getApplicationContext());
         // Getting all the value passed from previous Fragment
         eventName = intent.getStringExtra("event");
@@ -464,6 +430,8 @@ public class WifiIntentReceiver extends IntentService {
         Long timeStamp = System.currentTimeMillis() / 1000;
 
         mWifiData = new WifiData();
+
+
         // getting all wifi APs and forming data payload
         try {
             JSONObject wifiResults;
@@ -472,7 +440,7 @@ public class WifiIntentReceiver extends IntentService {
             //FIXME what is different bet this and """for (ScanResult result : mWifiManager.getScanResults())"""
 
 
-/*            for (int i = 0; i < bleMacs.size(); i++) {
+            for (int i = 0; i < bleMacs.size(); i++) {
                 wifiResults = new JSONObject();
 //                if (shouldLog(result)){
 //                Log.d("learning :", "Name=" + result.SSID + "  Mac=" + result.BSSID + "  RSSI=" + result.level);
@@ -480,28 +448,9 @@ public class WifiIntentReceiver extends IntentService {
                 wifiResults.put("rssi", bleRssi.get(i));
                 wifiResultsArray.put(wifiResults);
                 //}
-            }*/
 
-
-            Log.e(TAG, "///////////////////////////////////////// Logging HashMap ///////////////////////////////////////////////");
-
-            for (String s : hashMap.keySet()) {
-                String log = s + " :" + "\n";
-                ArrayList array = hashMap.get(s);
-                log = log + Arrays.toString(array.toArray());
-                wifiResults = new JSONObject();
-                int sum = 0;
-                for (int i = 0; i < array.size(); i++)
-                    sum = sum + (int)array.get(i);
-                int avg = sum / array.size();
-//                if (shouldLog(result)){
-//                Log.d("learning :", "Name=" + result.SSID + "  Mac=" + result.BSSID + "  RSSI=" + result.level);
-                wifiResults.put("mac", s);
-                wifiResults.put("rssi", avg);
-                wifiResultsArray.put(wifiResults);
-                Log.e(TAG, log);
-                //}
             }
+
 
             wifiFingerprint = new JSONObject();
             wifiFingerprint.put("group", groupName);
@@ -511,13 +460,11 @@ public class WifiIntentReceiver extends IntentService {
             wifiFingerprint.put("wifi-fingerprint", wifiResultsArray);
             Log.d(TAG, String.valueOf(wifiFingerprint));
 
-            sendPayload(eventName, serverName, wifiFingerprint);
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-
+        sendPayload(eventName, serverName, wifiFingerprint);
     }
 
 

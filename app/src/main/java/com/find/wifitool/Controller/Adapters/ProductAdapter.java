@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.find.wifitool.Model.Product;
 import com.find.wifitool.R;
+import com.find.wifitool.Utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         Product product = filtered_list.get(position);
         holder.name.setText(product.getName());
         String s = product.getPrice() + " ریال";
-        holder.price.setText(s);
+        holder.price.setText(Utils.toPersianNum(s, false));
         holder.status.setText(product.getStatus() ? "موجود" : "ناموجود");
         Picasso.with(myContext).load(product.getImageUrl())
                 .error(R.drawable.no_image)

@@ -60,12 +60,15 @@ public class ProductListActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this));
-        // specify an adapter (see also next example)
+        // specify an sliderPagerAdapter (see also next example)
         mAdapter = new ProductAdapter(arrayList, ProductListActivity.this);
         mAdapter.setOnItemClickListener((view, position) -> {
             Toast.makeText(ProductListActivity.this, "item" + position + " clicked", Toast.LENGTH_SHORT).show();
             StaticObjects.product = arrayList.get(position);
-            startActivity(new Intent(ProductListActivity.this, ProductItemActivity.class));
+            Intent intent = new Intent(ProductListActivity.this, ProductItemActivity.class);
+            intent.putExtra("title", arrayList.get(position).getName());
+            intent.putExtra("image", arrayList.get(position).getImageUrl());
+            startActivity(intent);
         });
 
         mRecyclerView.setAdapter(mAdapter);
@@ -112,58 +115,23 @@ public class ProductListActivity extends AppCompatActivity {
 
     private void addItemToList() {
         List<Product> localList = new ArrayList<>();
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
-        localList.add(new Product(10,"پژو 597", "تیپ 12", null, 25000000, true,
-                "http://www.topgear.com/sites/default/files/styles/16x9_1280w/public/images/news-article/2016/05/cc421a04d7766b7df8f517bfbff1905d/1192121_peugeot_3008_1605styp_001_b.jpg"));
-        localList.add(new Product(22,"سمند 682", "تیپ 37", null, 29530000, false,
-                "https://www.ikco.ir/UploadedFiles/Permanent/201604/sr7lnvkin7.jpg"));
+        localList.add(new Product(10,"راهنمای بازدیدکنندگان نمایشگاه", "",
+                "ارائه راهکاری برای تبلیغات هوشمند، مدیریت محصولات و بررسی و تحلیل های آماری مشتریان برمبنای داده های حاصل از موقعیت یابی", 10000000, true,
+                StaticObjects.ParsinServerIp + "/media/images/2017/07/20/Parsin1.png"));
+        localList.add(new Product(20,"سامانه راهنمای موزه ها", "",
+                "ارائه راهکار هایی برای ایجاد برنامه راهنمایی موزه ها و اماکن تاریخی و گردشکری بر مبنای تبلیغات مجاورتی و موقعیت یابی درون ساختمان.", 10000000, true,
+                StaticObjects.ParsinServerIp + "/media/images/2017/07/20/parsin2.png"));
+        localList.add(new Product(30,"راهنمای مشتریان مخصوص فروشگاه ها و اماکن تجاری", "",
+                "ایجاد سامانه مکانیابی با هدف جذب و تحلیل مشتری در کنار کاربرد های رایج راهنمای مشتریان و پنل مدیریت فروشگاه", 10000000, true,
+                StaticObjects.ParsinServerIp + "/media/images/2017/07/20/parsin3.png"));
+        localList.add(new Product(40,"سامانه ردیابی کارکنان و تجهیزات", "",
+                "سامانه ردیابی کارکنان و تجهیزات مبتنی بر پلتفرم موقعیت یابی", 10000000, true,
+                StaticObjects.ParsinServerIp + "/media/images/2017/07/20/parsin4.png"));
+        localList.add(new Product(50,"سیستم موقعیت یابی بیمارستان و مراکز درمانی", "",
+                "سیستم موقعیت یابی بلادرنگ بیمارستان و مراکز درمانی", 10000000, true,
+                StaticObjects.ParsinServerIp + "/media/images/2017/07/20/parsin5.png"));
+
+
 
 /*
         DBHelper db = new DBHelper(ProductListActivity.this);

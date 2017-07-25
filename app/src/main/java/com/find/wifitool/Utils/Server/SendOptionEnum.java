@@ -9,7 +9,7 @@ public enum SendOptionEnum {
     Get_Product_List("/booth/viewProductsList/"),
     Check_server("/en/booth/checkServer"),
     Get_Booth_Item("/booth/viewBoothProducts/"),
-    Get_Advertisement("/en/booth/advertisementJson");
+    Get_Advertisement("/ajax/advertisementJson");
 
     private String url;
 

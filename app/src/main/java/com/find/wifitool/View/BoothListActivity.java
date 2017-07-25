@@ -59,22 +59,18 @@ public class BoothListActivity extends AppCompatActivity implements Observer {
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        // specify an adapter (see also next example)
+        // specify an sliderPagerAdapter (see also next example)
         mAdapter = new BoothAdapter(arrayList, BoothListActivity.this);
         mAdapter.setOnItemClickListener((view, position) -> {
-            Toast.makeText(BoothListActivity.this, "item" + position + " clicked", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(BoothListActivity.this, "item" + position + " clicked", Toast.LENGTH_SHORT).show();
             StaticObjects.booth = arrayList.get(position);
             startActivity(new Intent(BoothListActivity.this, BoothItemActivity.class));
         });
-
         mRecyclerView.setAdapter(mAdapter);
-
         parsin = new ParsinServer();
-
         parsin.register(this);
 
-
-//        addItemToList();
+        addItemToList();
 
         parsin.getBooths();
 
@@ -116,6 +112,51 @@ public class BoothListActivity extends AppCompatActivity implements Observer {
 
 
     private void addItemToList() {
+        arrayList.add(new Booth("پارسیوت", "", "پارس اینترنت اشیا ارایه دهنده راهکار های مبتی بر مکان یابی درون ساختمان", "http://parsiotco.ir/wp-content/uploads/2017/05/PARSiotFinalFinalFinal-2.png"));
+        arrayList.add(new Booth("آرمان رایان شریف", "", null, "http://armansoft.ir/wp-content/uploads/2015/08/logoar.png"));
+        arrayList.add(new Booth("ایرانسل", "", null, StaticObjects.ParsinServerIp + "/static/img/irancell.jpg"));
+        arrayList.add(new Booth("همراه اول", "", null, StaticObjects.ParsinServerIp + "/static/img/hamrah.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+//        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
+//        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+/*
         arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
         arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
         arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
@@ -124,48 +165,7 @@ public class BoothListActivity extends AppCompatActivity implements Observer {
         arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
         arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
         arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
-        arrayList.add(new Booth("پارسیوت", "کمیل شاه حسینی", null, "http://parsiotco.ir/wp-content/uploads/2016/10/logo.jpg"));
-        arrayList.add(new Booth("انتشارات گاج", "آقای جوکار", null, "http://gaj.ir/img/common/logo-h.png"));
+*/
 
         mAdapter.notifyDataSetChanged();
 

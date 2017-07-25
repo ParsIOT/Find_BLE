@@ -127,7 +127,7 @@ public class FindWiFiImpl implements FindWiFi {
                 }
                 Request request = requestBuilder.build();
                 httpClient.newCall(request).enqueue(new HttpCallback(callback));
-                Log.e(TAG, "sendPayload: lock is being acquire");
+//                Log.e(TAG, "sendPayload: lock is being acquire");
 
 
             } catch (Exception e) {

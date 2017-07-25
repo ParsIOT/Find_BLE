@@ -23,8 +23,12 @@
     <string name="title_activity_about_us">About Us</string>
     <string name="aboutus_text">اين برنامه براي بازديدکنندگان نمايشگاه ها تهيه شده است به طوري که علاوه بر کارايي هاي برنامه هاي معمول در اين حوزه ، قابليت ها و ويژگي هاي مبتني بر مکان يابي درون ساختمان را هم ارائه کند. گروه نرم افزاري پارسيوت يک گروه دانشجويي تازه تاسيس است، که سعي دارد خدمات مبتني بر مکان يابي درون ساختمان را ارائه کند.</string>
     <string name="title_activity_news">اخبار نمایشگاه</string>
-    <string name="title_activity_booth_list">BoothListActivity</string>
+    <string name="title_activity_booth_list">غرفه ها</string>
     <string name="title_activity_booth_item">BoothItemActivity</string>
-    <string name="title_activity_product_list">ProductListActivity</string>
+    <string name="title_activity_product_list">محصولات</string>
     <string name="title_activity_product_item">ProductItemActivity</string>
+    <string name="product_description">پارسیوت، سامانه های مکانیابی و مسیریابی درون ساختمان را با نام تجاری «پارسین» برای صنایع و کاربردهای مختلف ارائه می دهد. از آنجا که GPS در محیط های مسقف فراهم نیست، در این سامانه از فرستنده های بلوتوث و وای فای جهت تعیین مکان درون ساختمان ها استفاده می شود. به واسطه سامانه پارسین، کاربران قادر خواهند بود موقعیت مکانی افراد و تجهیزات را به صورت آنی مشاهده نمایند.
+</string>
+    <string name="title_activity_main_temp">پارسین</string>
+
 </resources>

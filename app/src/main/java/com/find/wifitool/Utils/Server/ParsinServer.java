@@ -142,6 +142,7 @@ public class ParsinServer implements Observable {
 //                        Advertisement advertisementObj;
                         String advrName = advertisementJson.getString("name");
                         String advrText = advertisementJson.getString("text");
+                        String advrImg = advertisementJson.getString("image");
                         int advrId = advertisementJson.getInt("id");
 
                         Log.d("Advertisment Name:", advrName);
@@ -149,7 +150,7 @@ public class ParsinServer implements Observable {
 
                         JSONArray advrSections = advertisementJson.getJSONArray("sections");
 
-                        Advertisement advertisement = new Advertisement(advrId, advrName, advrText);
+                        Advertisement advertisement = new Advertisement(advrId, advrName, advrText,advrImg);
 
                         for (int j = 0; j < advrSections.length(); j++) {
                             JSONObject sectionJson = advrSections.getJSONObject(j);

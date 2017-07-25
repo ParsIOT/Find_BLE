@@ -2,7 +2,9 @@ package com.find.wifitool.internal;
 
 import android.content.Context;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 
 public class FindUtils {
@@ -14,11 +16,14 @@ public class FindUtils {
 
     // Checking if WiFi adapter is ON or OFF
     public static boolean isWiFiAvailable(Context context) {
-        WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled()) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm.getActiveNetworkInfo() != null) {
             return true;
         }
-        else return false;
+        else{
+            Log.e("FindUtils","Connection Problem");
+            return false;
+        }
     }
 
     // Checking Location service status

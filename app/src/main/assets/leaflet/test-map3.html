@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My test Map - Leaflet</title>
+	<link rel="stylesheet" href="leaflet.css" />
+	<script src="leaflet.js"></script>
+	<script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="MovingMarker.js"></script>
+</head>
+
+<body>
+<div id="map" style="width: 100%; height: 100% ; position : absolute;"></div>
+<script type="text/javascript">
+
+
+		
+		var map = L.map('map', {
+			crs: L.CRS.Simple,
+			minZoom: -3
+		});
+
+		var bounds = [[-400,-300], [400,300]];
+		var image = L.imageOverlay('test-map.png', bounds).addTo(map);
+
+
+		map.setView( [0, 0], 0);
+
+
+
+/*		var myMovingMarker = L.Marker.movingMarker([[10, 10],[50, 50]], [500]).addTo(map);
+		var myMovingMarker = L.Marker.movingMarker([[-430, -300],[-430, -300]], [800]).addTo(map);
+        L.Marker.movingMarker([[-430, -300],[-150, -2]], [5000]).addTo(map).start();
+		myMovingMarker.start();
+        myMovingMarker.setLatLng([250, 300]);*/
+
+
+		var marker = L.marker([-40, 176]).addTo(map);
+        //marker.bindPopup("<b>x = " + e.latlng.lat + "</b><br><b>y = " + e.latlng.lng + "</b>");
+        marker.bindPopup("<b>x = " + "</b><br><b>y = "  + "</b>");
+
+
+		var myVar = Android.getFromAndroid();
+		console.log("salam" + myVar);
+*/
+
+		function update_map(arg) {
+		    console.log(arg);
+		    var pattern = /(.*),(.*)/;
+		    var match = pattern.exec(arg);
+		    console.log(match);
+		    var x = match[1];
+		    var y = match[2];
+		    //L.marker([x, y]).addTo(map);
+            marker.setLatLng([x, y]);
+            //L.Marker.movingMarker([[10, 10],[50, 50]], [500]).addTo(map);
+			console.log("salam " + arg);
+			
+
+		}
+
+		map.on('click', function(e) {
+			console.log(e.latlng.lat + "," + e.latlng.lng);
+			var retVar = e.latlng.lat + "," + e.latlng.lng;
+		    Android.sendToAndroid(retVar);
+		});
+
+        marker.on('click' , function marketOnClick(e) {
+            marker._popup.setContent("<b>x = " + e.latlng.lat + "</b><br><b>y = " + e.latlng.lng + "</b>");
+            marker.openPopup();
+        });
+
+
+
+
+
+	</script>
+</body>
+</html>

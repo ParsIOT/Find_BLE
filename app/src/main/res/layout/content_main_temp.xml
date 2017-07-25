@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main_temp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.find.wifitool.View.MainTempActivity"
+    tools:showIn="@layout/activity_main_temp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- SLIDER -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="175dp">
+
+            <TextView
+                android:id="@+id/slider_none_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="در حال حاضر اسلایدی موجود نیست"
+                android:textSize="15sp" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/slider_main_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent" />
+
+
+            <LinearLayout
+                android:id="@+id/slider_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="50dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/img_btn_booth"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/booth"
+                android:background="@null"
+                android:layout_width="75dp"
+                android:layout_height="75dp" />
+
+            <ImageButton
+                android:id="@+id/img_btn_search"
+                android:src="@mipmap/search"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+/>
+
+            <ImageButton
+                android:id="@+id/img_btn_product"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:src="@mipmap/product"
+                android:background="@null"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+/>
+
+        </LinearLayout>
+
+
+        <!-- NEWS -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <ImageButton
+                android:id="@+id/news_open_activity_btn"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/dots_horizontal" />
+
+
+            <ImageButton
+                android:id="@+id/news_expand_btn"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_expand_more"
+                android:tint="@color/gray_dark" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/news_expand_btn"
+                android:gravity="center_vertical"
+                android:paddingRight="8dp"
+                android:text="اخبار امروز"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/news_container"
+            android:layout_width="match_parent"
+            android:layout_height="110dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="برای امروز خبری درج نشده است"
+                android:textSize="16sp"
+                android:visibility="visible" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_today_news"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:paddingRight="40dp"
+                android:text="امکانات رفاهی"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_emkanat_refahi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="70dp" />
+
+
+    </LinearLayout>
+
+
+</ScrollView>

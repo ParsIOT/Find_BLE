@@ -28,6 +28,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,6 +179,7 @@ public class TrackFragment extends Fragment {
         mWebView.addJavascriptInterface(new WebAppInterface(getActivity()), "Android");
         mWebView.loadUrl("file:///android_asset/leaflet/test-map.html");
         mButton = (Button) rootView.findViewById(R.id.button);
+        adverHasShown = new ArrayList<>();
         mButton.setOnClickListener(v -> {
 //            mWebView.loadUrl("javascript:update_map()");
             Toast.makeText(getActivity(), "Long Click to Toggle\nWebView & TextView", Toast.LENGTH_SHORT).show();
@@ -241,7 +243,8 @@ public class TrackFragment extends Fragment {
                         float x_y[] = Utils.getIntXY(currLocation);
                         if (!adverHasShown.contains(advertisement.getId())) {
                             if (Utils.inSquare(x_y[0], x_y[1], advertisement)) {
-                                Utils.notifyThis(advertisement.getTitle(), advertisement.getText(), getActivity());
+                                Log.d("Notification adv :",advertisement.getTitle());
+                                Utils.notifyThis(advertisement.getId(),advertisement.getTitle(), advertisement.getText(),advertisement.getImg(), getActivity());
                                 adverHasShown.add(advertisement.getId());
                             }
                         }
@@ -260,13 +263,13 @@ public class TrackFragment extends Fragment {
             Log.e(TAG,"run " + "salam");
             if (Build.VERSION.SDK_INT >= 23) {
 //                if (FindUtils.isWiFiAvailable(mContext) && FindUtils.hasAnyLocationPermission(mContext)) {
-                    Intent intent = new Intent(mContext, WifiIntentReceiver.class);
-                    intent.putExtra("event", Constants.TRACK_TAG);
-                    intent.putExtra("groupName", strGroup);
-                    intent.putExtra("userName", strUsername);
-                    intent.putExtra("serverName", strServer);
-                    intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
-                    mContext.startService(intent);
+                Intent intent = new Intent(mContext, WifiIntentReceiver.class);
+                intent.putExtra("event", Constants.TRACK_TAG);
+                intent.putExtra("groupName", strGroup);
+                intent.putExtra("userName", strUsername);
+                intent.putExtra("serverName", strServer);
+                intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
+                mContext.startService(intent);
 
             } else if (Build.VERSION.SDK_INT < 23) {
                 if (FindUtils.isWiFiAvailable(mContext)) {

@@ -13,7 +13,7 @@
 <script type="text/javascript">
 
 
-		
+
 		var map = L.map('map', {
 			crs: L.CRS.Simple,
 			minZoom: -3
@@ -33,8 +33,10 @@
 		myMovingMarker.start();
         myMovingMarker.setLatLng([250, 300]);*/
 
-
-		var marker = L.marker([-400, -300]).addTo(map);
+		//var xxxx = Math.floor(Math.random() * (300 + 300 + 1)) - 300;
+		//var yyyy = Math.floor(Math.random() * (300 + 300 + 1)) - 300;
+		//var marker = L.marker([-400, -300]).addTo(map);
+		var marker = L.marker([8, 26]).addTo(map);
         //marker.bindPopup("<b>x = " + e.latlng.lat + "</b><br><b>y = " + e.latlng.lng + "</b>");
         marker.bindPopup("<b>x = " + "</b><br><b>y = "  + "</b>");
 
@@ -54,7 +56,7 @@
             marker.setLatLng([x, y]);
             //L.Marker.movingMarker([[10, 10],[50, 50]], [500]).addTo(map);
 			console.log("salam " + arg);
-			
+
 
 		}
 

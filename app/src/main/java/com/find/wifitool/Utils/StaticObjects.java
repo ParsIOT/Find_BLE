@@ -16,5 +16,5 @@ public class StaticObjects {
 
     public static String PARSIN_SERVER_NAME = "parsinServer";
 
-    public static String ParsinServerIp = "http://192.168.43.120:8008"; //without / at the end
+    public static String ParsinServerIp = "http://192.168.88.254:8000"; //without / at the end
 }

@@ -156,7 +156,7 @@ public class TrackFragment extends Fragment {
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new WebAppInterface(getActivity()), "Android");
-        mWebView.loadUrl("file:///android_asset/leaflet/test-map.html");
+        mWebView.loadUrl("file:///android_asset/leaflet/test-map3.html");
         mButton = (Button) rootView.findViewById(R.id.button);
         mButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {

@@ -10,12 +10,14 @@ public class Advertisement {
     private int id;
     private String title;
     private String text;
+    private String img;
     private ArrayList<Section> sections;
 
-    public Advertisement(int id, String title, String text) {
+    public Advertisement(int id, String title, String text,String img) {
         this.id = id;
         this.title = title;
         this.text = text;
+        this.img = img;
         this.sections = new ArrayList<>();
     }
 
@@ -30,7 +32,9 @@ public class Advertisement {
     public String getText() {
         return text;
     }
-
+    public String getImg() {
+        return img;
+    }
     public ArrayList<Section> getSections() {
         return sections;
     }

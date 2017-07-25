@@ -22,22 +22,29 @@ public class HttpCallback implements Callback {
     //Constructor
     public HttpCallback(com.squareup.okhttp.Callback delegate) {
         this.delegate = delegate;
-        this.handler = new Handler(Looper.getMainLooper());
+        //this.handler = new Handler(Looper.getMainLooper());
+        this.handler = new Handler();
     }
 
     @Override
     public void onFailure(final Request request, final IOException e) {
-        handler.post(new Runnable() {
+        /*handler.post(new Runnable() {
             @Override
             public void run() {
                 delegate.onFailure(request, e);
             }
-        });
+        });*/
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                delegate.onFailure(request, e);
+            }
+        }).start();
     }
 
     @Override
     public void onResponse(final Response response) throws IOException {
-        handler.post(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -46,6 +53,16 @@ public class HttpCallback implements Callback {
                     delegate.onFailure(null, e);
                 }
             }
-        });
+        }).start();
+/*        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    delegate.onResponse(response);
+                } catch (IOException e) {
+                    delegate.onFailure(null, e);
+                }
+            }
+        });*/
     }
 }
