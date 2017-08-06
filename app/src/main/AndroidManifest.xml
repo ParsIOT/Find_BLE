@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.find.wifitool">
+    package="com.parsin.bletool">
 
     <!-- WiFi permissions and features -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -30,57 +30,16 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".Utils.MyApp"
+        android:name="com.parsin.bletool.Utils.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".View.MainActivity"
+            android:name="com.parsin.bletool.View.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
-
-        <service
-            android:name=".internal.wifi.WifiIntentReceiver"
-            android:enabled="true"
-            android:exported="false" />
-
-        <activity
-            android:name=".Test.TestActivity"
-            android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".View.AboutUsActivity"
-            android:label="@string/title_activity_about_us"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".NewsActivity"
-            android:label="@string/title_activity_news"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".View.BoothListActivity"
-            android:label="@string/title_activity_booth_list"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".View.BoothItemActivity"
-            android:label="@string/title_activity_booth_item"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".View.ProductListActivity"
-            android:label="@string/title_activity_product_list"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".View.ProductItemActivity"
-            android:label="@string/title_activity_product_item"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".View.MainTempActivity"
-            android:label="@string/title_activity_main_temp"
-            android:theme="@style/AppTheme.NoActionBar" >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -89,9 +48,51 @@
 
 
         </activity>
-        <activity android:name=".View.MapActivity"
+
+        <service
+            android:name="com.parsin.bletool.internal.wifi.WifiIntentReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name="com.parsin.bletool.Test.TestActivity"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.View.AboutUsActivity"
+            android:label="@string/title_activity_about_us"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.NewsActivity"
+            android:label="@string/title_activity_news"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.View.BoothListActivity"
+            android:label="@string/title_activity_booth_list"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.View.BoothItemActivity"
+            android:label="@string/title_activity_booth_item"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.View.ProductListActivity"
+            android:label="@string/title_activity_product_list"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.View.ProductItemActivity"
+            android:label="@string/title_activity_product_item"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="com.parsin.bletool.View.MainTempActivity"
+            android:label="@string/title_activity_main_temp"
+            android:theme="@style/AppTheme.NoActionBar" >
+
+
+        </activity>
+        <activity android:name="com.parsin.bletool.View.MapActivity"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.Translucent">
+
 
 
 

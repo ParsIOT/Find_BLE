@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Parsin</string>
+    <string name="app_name">Parsin BLE</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -29,6 +29,6 @@
     <string name="title_activity_product_item">ProductItemActivity</string>
     <string name="product_description">پارسیوت، سامانه های مکانیابی و مسیریابی درون ساختمان را با نام تجاری «پارسین» برای صنایع و کاربردهای مختلف ارائه می دهد. از آنجا که GPS در محیط های مسقف فراهم نیست، در این سامانه از فرستنده های بلوتوث و وای فای جهت تعیین مکان درون ساختمان ها استفاده می شود. به واسطه سامانه پارسین، کاربران قادر خواهند بود موقعیت مکانی افراد و تجهیزات را به صورت آنی مشاهده نمایند.
 </string>
-    <string name="title_activity_main_temp">پارسین</string>
+    <string name="title_activity_main_temp">پارسین BLE</string>
 
 </resources>

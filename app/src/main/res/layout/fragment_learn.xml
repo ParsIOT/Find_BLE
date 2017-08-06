@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:keepScreenOn="true"
-    tools:context="com.find.wifitool.View.Fragment.LearnFragment">
+    tools:context="com.parsin.bletool.View.Fragment.LearnFragment">
 
 
     <ListView
