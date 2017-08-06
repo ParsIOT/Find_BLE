@@ -91,7 +91,6 @@ public class LearnFragment extends Fragment {
     private int REQUEST_ENABLE_BT = 1;
 
 
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -130,7 +129,7 @@ public class LearnFragment extends Fragment {
             dialog.setPositiveButton("Enable Locations service", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     getActivity().startActivity(myIntent);
                 }
             });
@@ -160,7 +159,7 @@ public class LearnFragment extends Fragment {
         final InternalDataBase internalDataBase = new InternalDataBase(getActivity());
 
         List<Event> eventList = internalDataBase.getAllEvents();
-        for(Event event : eventList) {
+        for (Event event : eventList) {
             WifiObject wifi = new WifiObject(event.getWifiName(), event.getWifiGroup(), event.getWifiUser());
             wifiArrayAdapter.add(wifi);
         }
@@ -173,7 +172,7 @@ public class LearnFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
 
 
-        ListView listView = (ListView)rootView.findViewById(R.id.listView);
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(wifiArrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -245,9 +244,9 @@ public class LearnFragment extends Fragment {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mWebView.getVisibility() == View.GONE){
+                if (mWebView.getVisibility() == View.GONE) {
                     mWebView.setVisibility(View.VISIBLE);
-                }else mWebView.setVisibility(View.GONE);
+                } else mWebView.setVisibility(View.GONE);
 
             }
         });
@@ -264,10 +263,10 @@ public class LearnFragment extends Fragment {
 
                 alert.setPositiveButton("add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        if (edittext.getText().toString() == ""){
+                        if (edittext.getText().toString() == "") {
                             Toast.makeText(getActivity(), "editText was empty", Toast.LENGTH_SHORT).show();
                             dialog.dismiss();
-                        }else {
+                        } else {
                             WifiObject wifiObject = new WifiObject(edittext.getText().toString(),
                                     sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP),
                                     sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME));
@@ -297,7 +296,7 @@ public class LearnFragment extends Fragment {
 
     private boolean serverIsReachable() {
         final boolean[] isReachable = {false};
-        AsyncTask<Void,Void,Void> asyncTask = new AsyncTask<Void,Void,Void>() {
+        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
                 OkHttpClient client = new OkHttpClient();
@@ -323,7 +322,7 @@ public class LearnFragment extends Fragment {
             e.printStackTrace();
         }
 
-        Log.e("REACHABILITY " , String.valueOf(isReachable[0]));
+        Log.e("REACHABILITY ", String.valueOf(isReachable[0]));
         return isReachable[0];
     }
 
@@ -355,21 +354,25 @@ public class LearnFragment extends Fragment {
         @Override
         public void run() {
             // Passing values to WifiIntent for further processing
-            if (Build.VERSION.SDK_INT >= 23 ) {
+            if (Build.VERSION.SDK_INT >= 23) {
 
 //                if(FindUtils.isWiFiAvailable(mContext) && FindUtils.hasAnyLocationPermission(mContext)) {
-                    Intent intent = new Intent(mContext, WifiIntentReceiver.class);
-                    intent.putExtra("event", Constants.LEARN_TAG);
-                    intent.putExtra("groupName", strGroup);
-                    intent.putExtra("userName", strUsername);
-                    intent.putExtra("serverName", strServer);
-                    intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
-                    mContext.startService(intent);
+                sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
+                strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
+                strUsername = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
+                strServer = sharedPreferences.getString(Constants.SERVER_NAME, Constants.DEFAULT_SERVER);
+                learnIntervalVal = sharedPreferences.getInt(Constants.LEARN_INTERVAL, Constants.DEFAULT_LEARNING_INTERVAL);
+                learnPeriodVal = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.DEFAULT_LEARNING_PERIOD);
+                Intent intent = new Intent(mContext, WifiIntentReceiver.class);
+                intent.putExtra("event", Constants.LEARN_TAG);
+                intent.putExtra("groupName", strGroup);
+                intent.putExtra("userName", strUsername);
+                intent.putExtra("serverName", strServer);
+                intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
+                mContext.startService(intent);
 
-            }
-
-            else if (Build.VERSION.SDK_INT < 23) {
-                if(FindUtils.isWiFiAvailable(mContext)) {
+            } else if (Build.VERSION.SDK_INT < 23) {
+                if (FindUtils.isWiFiAvailable(mContext)) {
                     Intent intent = new Intent(mContext, WifiIntentReceiver.class);
                     intent.putExtra("event", Constants.LEARN_TAG);
                     intent.putExtra("groupName", strGroup);
@@ -378,11 +381,10 @@ public class LearnFragment extends Fragment {
                     intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
                     mContext.startService(intent);
                 }
-            }
-            else {
+            } else {
                 return;
             }
-            Log.e("Counter" , String.valueOf(++msgSentCounter));
+            Log.e("Counter", String.valueOf(++msgSentCounter));
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -420,6 +422,7 @@ public class LearnFragment extends Fragment {
     public void onResume() {
         super.onResume();
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -457,27 +460,29 @@ public class LearnFragment extends Fragment {
         Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
     }
 
-    private void updateUI(){
+    private void updateUI() {
         progress.setMessage(dialogMsg + String.valueOf(msgSentCounter));
     }
 
 
     public class WebAppInterface {
         Context mContext;
+
         WebAppInterface(Context c) {
             mContext = c;
         }
+
         @JavascriptInterface
         public void sendToAndroid(String text) {
             //TODO  save text
 //            if (serverIsReachable()){
-            if(true){
+            if (true) {
                 strLocationName = text;
                 InternalDataBase internalDataBase = new InternalDataBase(getActivity());
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(Constants.LOCATION_NAME, strLocationName);
                 editor.apply();
-                WifiObject wifi = new WifiObject(strLocationName, strGroup , strUsername);
+                WifiObject wifi = new WifiObject(strLocationName, strGroup, strUsername);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -497,13 +502,14 @@ public class LearnFragment extends Fragment {
                 internalDataBase.addEvent(new Event(strLocationName, strGroup, strUsername));
                 handler.post(runnableCode);
                 Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 alertDialog = new AlertDialog.Builder(getActivity()).create();
                 alertDialog.setTitle("OooPs");
                 alertDialog.setMessage("server is not reachable");
                 alertDialog.show();
             }
         }
+
         @JavascriptInterface
         public String getFromAndroid() {
             return "This is from android.";
@@ -544,7 +550,6 @@ public class LearnFragment extends Fragment {
             }
         }
     }
-
 
 
 }

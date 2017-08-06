@@ -379,7 +379,6 @@ public class MainTempActivity extends AppCompatActivity implements NavigationVie
         recycler.setAdapter(emkanatAdapter);
         recycler.addItemDecoration(new DividerItemDecoration(this));
 
-
         emkanatList.add(new EmkanatRefahi(0, R.mipmap.question, "اطلاعات", "50,50"));
         emkanatList.add(new EmkanatRefahi(1, R.mipmap.praying_room, "نمازخانه", "100,50"));
         emkanatList.add(new EmkanatRefahi(2, R.mipmap.wc, "سرویس بهداشتی", "200,50"));
@@ -388,7 +387,6 @@ public class MainTempActivity extends AppCompatActivity implements NavigationVie
         emkanatList.add(new EmkanatRefahi(5, R.mipmap.restaurant, "رستوران", "100,100"));
         emkanatAdapter.notifyDataSetChanged();
     }
-
 
     private boolean checkPermission() {
         int result1 = ContextCompat.checkSelfPermission(MainTempActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);

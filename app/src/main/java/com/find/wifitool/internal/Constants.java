@@ -23,8 +23,8 @@ public class Constants {
 
     //Default values
     public static final String DEFAULT_USERNAME = "hadi";
-    public static final  String DEFAULT_GROUP =  "arman3";
-    public static String DEFAULT_SERVER = "http://192.168.88.254:8003/";
+    public static String DEFAULT_GROUP =  "arman3";
+    public static String DEFAULT_SERVER = "http://104.237.255.199:18003/";
     public static final String DEFAULT_LOCATION_NAME = "location";
     public static final int DEFAULT_TRACKING_INTERVAL = 3;
     public static final int DEFAULT_LEARNING_INTERVAL = 3;

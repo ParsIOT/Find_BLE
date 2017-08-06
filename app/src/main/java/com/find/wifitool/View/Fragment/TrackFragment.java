@@ -160,8 +160,8 @@ public class TrackFragment extends Fragment {
             dialog.show();
         }
         sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
-        strParsinServer = sharedPreferences.getString(StaticObjects.PARSIN_SERVER_NAME, StaticObjects.ParsinServerIp);
         strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
+        strParsinServer = sharedPreferences.getString(StaticObjects.PARSIN_SERVER_NAME, StaticObjects.ParsinServerIp);
         strServer = sharedPreferences.getString(Constants.SERVER_NAME, Constants.DEFAULT_SERVER);
         strUsername = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
         trackVal = sharedPreferences.getInt(Constants.TRACK_INTERVAL, Constants.DEFAULT_TRACKING_INTERVAL);
@@ -263,6 +263,13 @@ public class TrackFragment extends Fragment {
             Log.e(TAG,"run " + "salam");
             if (Build.VERSION.SDK_INT >= 23) {
 //                if (FindUtils.isWiFiAvailable(mContext) && FindUtils.hasAnyLocationPermission(mContext)) {
+                sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
+                strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
+                strParsinServer = sharedPreferences.getString(StaticObjects.PARSIN_SERVER_NAME, StaticObjects.ParsinServerIp);
+                strServer = sharedPreferences.getString(Constants.SERVER_NAME, Constants.DEFAULT_SERVER);
+                strUsername = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
+                trackVal = sharedPreferences.getInt(Constants.TRACK_INTERVAL, Constants.DEFAULT_TRACKING_INTERVAL);
+
                 Intent intent = new Intent(mContext, WifiIntentReceiver.class);
                 intent.putExtra("event", Constants.TRACK_TAG);
                 intent.putExtra("groupName", strGroup);
