@@ -31,4 +31,8 @@
 </string>
     <string name="title_activity_main_temp">پارسین BLE</string>
 
+    <string name="title_activity_location_learned">LocationLearned</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

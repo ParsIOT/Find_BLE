@@ -10,7 +10,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -30,71 +29,70 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="com.parsin.bletool.Utils.MyApp"
+        android:name=".Utils.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.parsin.bletool.View.MainActivity"
+            android:name=".View.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
 
         <service
-            android:name="com.parsin.bletool.internal.wifi.WifiIntentReceiver"
+            android:name=".internal.wifi.WifiIntentReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name="com.parsin.bletool.Test.TestActivity"
+            android:name=".Test.TestActivity"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.View.AboutUsActivity"
+            android:name=".View.AboutUsActivity"
             android:label="@string/title_activity_about_us"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.NewsActivity"
+            android:name=".NewsActivity"
             android:label="@string/title_activity_news"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.View.BoothListActivity"
+            android:name=".View.BoothListActivity"
             android:label="@string/title_activity_booth_list"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.View.BoothItemActivity"
+            android:name=".View.BoothItemActivity"
             android:label="@string/title_activity_booth_item"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.View.ProductListActivity"
+            android:name=".View.ProductListActivity"
             android:label="@string/title_activity_product_list"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.View.ProductItemActivity"
+            android:name=".View.ProductItemActivity"
             android:label="@string/title_activity_product_item"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.parsin.bletool.View.MainTempActivity"
+            android:name=".View.MainTempActivity"
             android:label="@string/title_activity_main_temp"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-
-        </activity>
-        <activity android:name="com.parsin.bletool.View.MapActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".View.MapActivity"
             android:configChanges="orientation"
-            android:theme="@style/Theme.AppCompat.Translucent">
-
-
-
+            android:theme="@style/Theme.AppCompat.Translucent" />
+        <activity
+            android:name=".View.LocationLearnedActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_location_learned"
+            android:theme="@style/FullscreenTheme" />
+        <activity android:name=".View.LogDbActivity">
 
         </activity>
     </application>

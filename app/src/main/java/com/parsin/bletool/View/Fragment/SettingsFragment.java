@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,10 +39,12 @@ public class SettingsFragment extends Fragment {
     private TextView labelServerName;
     private TextView learnInterval;
     private TextView trackInterval;
+    private TextView trackCounter;
     private TextView learnPeriod;
     private TextView labelLearnInterval;
     private TextView labelTrackInterval;
     private TextView labelLearnPeriod;
+    private TextView labelTrackCounter;
 
     private SharedPreferences sharedPreferences;
     private String prefUsername;
@@ -109,12 +112,45 @@ public class SettingsFragment extends Fragment {
         labelLearnInterval = (TextView)rootView.findViewById(R.id.labelLearnInterval);
         labelTrackInterval = (TextView)rootView.findViewById(R.id.labelTrackInterval);
         labelLearnPeriod = (TextView)rootView.findViewById(R.id.labelLearnPeriod);
+        labelTrackCounter = (TextView) rootView.findViewById(R.id.labelTrackCounter);
         learnInterval = (TextView)rootView.findViewById(R.id.fieldLearnInterval);
         learnPeriod = (TextView)rootView.findViewById(R.id.fieldLearnPeriod);
+        trackCounter = (TextView) rootView.findViewById(R.id.fieldTrackCounter);
         trackInterval = (TextView)rootView.findViewById(R.id.fieldTrackInterval);
 
         // Rendering the setting page
         drawUi();
+
+        labelTrackCounter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity()).setTitle("Edit Track Counter");
+                final EditText editText = new EditText(getActivity());
+                editText.setText(trackCounter.getText());
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                builder.setView(editText);
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Integer intTracking = Integer.valueOf(editText.getText().toString());
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(Constants.TrackCounterName, intTracking);
+                        trackCounter.setText(intTracking);
+                        Constants.DEFAULT_TRACKING_COUNTER = intTracking;
+                        editor.apply();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         // UserName click listener
         labelUserName.setOnClickListener(new View.OnClickListener() {

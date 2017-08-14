@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
+import com.parsin.bletool.Model.DaoMaster;
+import com.parsin.bletool.Model.DaoSession;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -16,6 +19,8 @@ import static android.content.ContentValues.TAG;
 
 public class MyApp extends Application {
 
+
+    private DaoSession mDaoSession;
 
     @Override
     public void onCreate() {
@@ -28,9 +33,16 @@ public class MyApp extends Application {
         //FontsOverride.setDefaultFont(this, "SANS", "Font/IRRoya.ttf");
         Log.e("APP", "SALAM");
 
-        //logging();
+        mDaoSession = new DaoMaster(
+                new DaoMaster.DevOpenHelper(this, "green.db").getWritableDb()).newSession();
+
 
     }
+
+    public DaoSession getDaoSession() {
+        return mDaoSession;
+    }
+
 
     public static void logging() {
 

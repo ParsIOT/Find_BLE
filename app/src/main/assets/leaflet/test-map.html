@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>My test Map - Leaflet</title>
-	<link rel="stylesheet" href="leaflet.css"/>
-	<link rel="stylesheet" href="leaflet.usermarker.css"/>
+    <title>My test Map - Leaflet</title>
+    <link rel="stylesheet" href="leaflet.css"/>
+    <link rel="stylesheet" href="leaflet.usermarker.css"/>
 
 </head>
 
@@ -52,9 +52,20 @@
 		});
 	}
 
+
+
+    function showLocations(arg){
+        points = arg.split(" ");
+        for(var s in points){
+
+        }
+    }
+
 	function changeAccuracy(accuracy) {
 		marker.setAccuracy(accuracy);
 	}
+
+
 
 </script>
 </body>

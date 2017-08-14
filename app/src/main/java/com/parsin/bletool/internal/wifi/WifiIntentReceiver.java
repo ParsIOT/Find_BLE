@@ -22,9 +22,7 @@ import android.widget.Toast;
 import com.parsin.bletool.Utils.httpCalls.FindWiFi;
 import com.parsin.bletool.Utils.httpCalls.FindWiFiImpl;
 import com.parsin.bletool.internal.Constants;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,9 +36,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 
 public class WifiIntentReceiver extends IntentService {
 
+    private static final int MIN_RSSI = -80;
     private BluetoothLeScanner mLEScanner;
     private List<ScanFilter> filters;
     private ScanSettings settings;
@@ -64,11 +67,8 @@ public class WifiIntentReceiver extends IntentService {
     private String currLocation;
     private Intent intent;
 
-    private ArrayList<String> bleMacs;
-    private ArrayList<Integer> bleRssi;
 
     private HashMap<String, ArrayList<Integer>> hashMap;
-
 
 
     private static final Set<Character> AD_HOC_HEX_VALUES =
@@ -93,8 +93,6 @@ public class WifiIntentReceiver extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         this.intent = intent;
-        bleMacs = new ArrayList<>();
-        bleRssi = new ArrayList<>();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -171,12 +169,12 @@ public class WifiIntentReceiver extends IntentService {
         if (event.equalsIgnoreCase("track")) {
             Callback postTrackEvent = new Callback() {
                 @Override
-                public void onFailure(Request request, IOException e) {
-                    Log.e(TAG, "Failed request: " + request, e);
+                public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "Failed request: " + e.getMessage());
                 }
 
                 @Override
-                public void onResponse(Response response) throws IOException {
+                public void onResponse(Call call, final Response response) throws IOException {
                     String body = response.body().string();
                     if (response.isSuccessful()) {
                         Log.d(TAG, body);
@@ -197,14 +195,14 @@ public class WifiIntentReceiver extends IntentService {
         } else {
             Callback postLearnEvent = new Callback() {
                 @Override
-                public void onFailure(Request request, IOException e) {
-                    Log.e(TAG, "Failed request: " + request, e);
+                public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "Failed request: " + e.getMessage());
                     Toast.makeText(getApplicationContext(), "Can't connect to server.",
                             Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
-                public void onResponse(Response response) throws IOException {
+                public void onResponse(Call call, final Response response) throws IOException {
                     String body = response.body().string();
                     Log.d(TAG, "Learning step was successful:\n" + body);
                 }
@@ -308,7 +306,6 @@ public class WifiIntentReceiver extends IntentService {
                 .setReportDelay(0);
         return builder.build();
     }
-
 
 
 //    private void scanLeDevice(final boolean enable) {
@@ -475,29 +472,28 @@ public class WifiIntentReceiver extends IntentService {
         mWifiData = new WifiData();
 
 
-        // getting all wifi APs and forming data payload
         try {
             JSONObject wifiResults;
             JSONArray wifiResultsArray = new JSONArray();
-            //List<ScanResult> mResults = mWifiManager.getScanResults();
+
             //FIXME what is different bet this and """for (ScanResult result : mWifiManager.getScanResults())"""
 
 
-
-            for (String s: hashMap.keySet()){
+            for (String s : hashMap.keySet()) {
                 Log.d(TAG, "sendBleToServer() called " + s + " : " + Arrays.toString(hashMap.get(s).toArray()));
 
-                String mac = s.substring(s.indexOf(" "));
+                String[] ss = s.split(" ");
+                String mac = ss[ss.length - 1];
 
                 int rssi = 0;
                 for (int r : hashMap.get(s)) rssi = rssi + r;
                 rssi = rssi / hashMap.get(s).size();
-
-                wifiResults = new JSONObject();
-                wifiResults.put("mac", mac);
-                wifiResults.put("rssi", rssi);
-
-                wifiResultsArray.put(wifiResults);
+                if (rssi > MIN_RSSI) {
+                    wifiResults = new JSONObject();
+                    wifiResults.put("mac", mac);
+                    wifiResults.put("rssi", rssi);
+                    wifiResultsArray.put(wifiResults);
+                }
             }
             Log.d(TAG, "sendBleToServer() called //////****  ****/////\n");
 
@@ -549,11 +545,11 @@ public class WifiIntentReceiver extends IntentService {
             super.onScanResult(callbackType, result);
             //Log.d(TAG, "onScanResult() called with: result = [" + result.getDevice().getName() + " : " + result.getRssi() + "]");
             String key = result.getDevice().getName() + " " + result.getDevice().getAddress();
-            if (!hashMap.containsKey(key)){
+            if (!hashMap.containsKey(key)) {
                 ArrayList<Integer> value = new ArrayList<>();
                 value.add(result.getRssi());
                 hashMap.put(key, value);
-            }else {
+            } else {
                 ArrayList<Integer> value = new ArrayList<>();
                 value.addAll(hashMap.get(key));
                 value.add(result.getRssi());

@@ -1,8 +1,10 @@
 package com.parsin.bletool.Utils.httpCalls;
 
-import com.squareup.okhttp.Callback;
+
 
 import org.json.JSONObject;
+
+import okhttp3.Callback;
 
 /**
  * Asynchronous HTTP library for the Find API.

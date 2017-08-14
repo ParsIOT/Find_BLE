@@ -25,6 +25,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 import com.parsin.bletool.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -211,4 +216,6 @@ public class TestActivity extends AppCompatActivity {
             gatt.disconnect();
         }
     };
+
+
 }

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My test Map - Leaflet</title>
+    <link rel="stylesheet" href="leaflet.css"/>
+    <link rel="stylesheet" href="leaflet.usermarker.css"/>
+
+</head>
+
+<body>
+<div id="map" style="width: 100%; height: 100% ; position : absolute;"></div>
+<script src="leaflet.js"></script>
+<script src="leaflet.usermarker.js"></script>
+<script src='Leaflet.Marker.SlideTo.js'></script>
+<script type="text/javascript">
+
+    var markers = []
+
+	var map = L.map('map', {
+			crs: L.CRS.Simple,
+			minZoom: -3
+		});
+	var bounds = [[-400,-300], [400,300]];
+	var image = L.imageOverlay('img/test-map.png', bounds).addTo(map);
+	map.setView( [0, 0], 0);
+
+
+	//var marker = L.marker([-400, -300]).addTo(map);
+        //marker.bindPopup("<b>x = " + e.latlng.lat + "</b><br><b>y = " + e.latlng.lng + "</b>");
+    //marker.bindPopup("<b>x = " + "</b><br><b>y = "  + "</b>");
+
+    function showLocation(arg){
+        var pattern = /(.*),(.*)/;
+		var match = pattern.exec(arg);
+		console.log(match);
+		var x = match[1];
+		var y = match[2];
+		var marker = L.marker([x, y]).addTo(map);
+        markers.push(marker)
+
+        marker.bindPopup("<b>x = " + "</b><br><b>y = "  + "</b>");
+        marker.on('click', function marketOnClick(e) {
+		marker._popup.setContent("<b>x = " + e.latlng.lat + "</b><br><b>y = " + e.latlng.lng + "</b>");
+		marker.openPopup();
+		var retVar = e.latlng.lat + "," + e.latlng.lng;
+		AndroidLocation.sendToAndroid(retVar);
+	});
+    }
+
+	//map.on('click', function (e) {
+	//	console.log(e.latlng.lat + "," + e.latlng.lng);
+	//	var retVar = e.latlng.lat + "," + e.latlng.lng;
+	//	AndroidLocation.sendToAndroid(retVar);
+	//});
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

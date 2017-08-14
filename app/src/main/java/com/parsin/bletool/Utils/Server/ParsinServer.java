@@ -10,10 +10,6 @@ import com.parsin.bletool.Model.Advertisement;
 import com.parsin.bletool.Model.Section;
 import com.parsin.bletool.Utils.StaticObjects;
 import com.parsin.bletool.internal.Constants;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,6 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**
@@ -56,21 +57,18 @@ public class ParsinServer implements Observable {
     }
 
     public void getProducts() {
-//        String credential = Credentials.basic(PublicClass.username, PublicClass.password);
         Request request = new Request.Builder()
                 .url(StaticObjects.ParsinServerIp + SendOptionEnum.Get_Product_List.url())
-//                .header("Authorization", credential)
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request,IOException e) {
+            public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 postResult(response.body().string());
-                //Log.w(ParsinServer.class.getSimpleName(), response.body().string());
             }
         });
     }
@@ -84,12 +82,12 @@ public class ParsinServer implements Observable {
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request,IOException e) {
+            public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 postResult(response.body().string());
                 //Log.w(ParsinServer.class.getSimpleName(), response.body().string());
             }
@@ -104,12 +102,12 @@ public class ParsinServer implements Observable {
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request,IOException e) {
+            public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 postResult(response.body().string());
                 //Log.w(ParsinServer.class.getSimpleName(), response.body().string());
             }
@@ -125,14 +123,14 @@ public class ParsinServer implements Observable {
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 final String mMessage = request.toString();
                 Log.e("resJSONError1", mMessage);
                 Log.e("getAdvJSON", "3");
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 String resJSONreq = response.body().string();
                 Log.d("resJSONParser:", resJSONreq);
                 try {
@@ -150,7 +148,7 @@ public class ParsinServer implements Observable {
 
                         JSONArray advrSections = advertisementJson.getJSONArray("sections");
 
-                        Advertisement advertisement = new Advertisement(advrId, advrName, advrText,advrImg);
+                        Advertisement advertisement = new Advertisement(advrId, advrName, advrText, advrImg);
 
                         for (int j = 0; j < advrSections.length(); j++) {
                             JSONObject sectionJson = advrSections.getJSONObject(j);
@@ -177,8 +175,6 @@ public class ParsinServer implements Observable {
         });
 
     }
-
-
 
 
     @Override
@@ -220,4 +216,6 @@ public class ParsinServer implements Observable {
         this.changed = true;
         notifyObservers();
     }
+
+
 }

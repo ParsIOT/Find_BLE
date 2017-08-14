@@ -39,15 +39,18 @@ import com.parsin.bletool.internal.Constants;
 import com.parsin.bletool.internal.FindUtils;
 import com.parsin.bletool.internal.wifi.WifiIntentReceiver;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
+
 
 import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class TrackFragment extends Fragment {
 
@@ -385,14 +388,14 @@ public class TrackFragment extends Fragment {
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
+            public void onFailure(Call call, IOException e) {
                 final String mMessage = request.toString();
                 Log.e("resJSONError1", mMessage);
 
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 final String mMessage = response.body().string();
 //                Log.e("resJSONError2", mMessage);
                 advrJSONreq.post(new Runnable() {

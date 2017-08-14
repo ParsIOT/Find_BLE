@@ -4,52 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:keepScreenOn="true"
-    >
-
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     <ImageView
         android:id="@+id/imageView"
-        android:src="@drawable/geo_marker"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="20dp"
+        android:layout_alignWithParentIfMissing="false"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="false"
-        android:layout_alignWithParentIfMissing="false"
-        android:layout_centerVertical="false" />
+        android:layout_centerVertical="false"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/geo_marker" />
+
     <TextView
         android:id="@+id/labelHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Location"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imageView"
-        android:textSize="36sp"
-        android:textColor="#9E9E9E"
-        android:layout_centerInParent="false"
         android:layout_alignWithParentIfMissing="false"
-        android:layout_centerVertical="false" />
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_centerVertical="false"
+        android:text="Current Location"
+        android:textColor="#9E9E9E"
+        android:textSize="36sp" />
 
     <TextView
         android:id="@+id/labelLocationName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Determining"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/labelHeader"
-        android:textSize="36sp"
-        android:textColor="#757575"
-        android:textStyle="normal|bold"
-        android:layout_centerInParent="false"
         android:layout_alignWithParentIfMissing="false"
-        android:layout_centerVertical="false" />
-
-
+        android:layout_below="@+id/labelHeader"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="10dp"
+        android:text="Determining"
+        android:textColor="#757575"
+        android:textSize="36sp"
+        android:textStyle="normal|bold" />
 
 
     <WebView
@@ -58,11 +55,60 @@
         android:layout_height="match_parent" />
 
     <Button
-        android:visibility="gone"
-        android:layout_alignParentEnd="true"
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_alignParentEnd="true"
+        android:text="Button"
+        android:visibility="gone" />
+
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/track_counter_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="tracking..." />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="تا اسکن"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/fieldTrackCounterInteger"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </RelativeLayout>

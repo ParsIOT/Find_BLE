@@ -4,14 +4,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
+
 
 import org.json.JSONObject;
 
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 
 public class FindWiFiImpl implements FindWiFi {

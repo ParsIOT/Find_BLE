@@ -38,9 +38,7 @@ import com.parsin.bletool.internal.FindUtils;
 import com.parsin.bletool.internal.wifi.WifiArrayAdapter;
 import com.parsin.bletool.internal.wifi.WifiIntentReceiver;
 import com.parsin.bletool.internal.wifi.WifiObject;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -292,38 +290,6 @@ public class LearnFragment extends Fragment {
 //        new BLESetting(getActivity());
 
         return rootView;
-    }
-
-    private boolean serverIsReachable() {
-        final boolean[] isReachable = {false};
-        AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                OkHttpClient client = new OkHttpClient();
-                client.setConnectTimeout(5, TimeUnit.SECONDS); // connect timeout
-                client.setReadTimeout(5, TimeUnit.SECONDS);
-                Request request = new Request.Builder()
-                        .url(Constants.DEFAULT_SERVER)
-                        .build();
-                try {
-
-                    Response response = client.newCall(request).execute();
-                    isReachable[0] = response.isSuccessful();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-        try {
-            asyncTask.execute().get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        Log.e("REACHABILITY ", String.valueOf(isReachable[0]));
-        return isReachable[0];
     }
 
     // Insert new location into listView
