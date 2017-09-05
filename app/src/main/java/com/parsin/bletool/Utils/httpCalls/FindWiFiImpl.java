@@ -37,15 +37,15 @@ public class FindWiFiImpl implements FindWiFi {
 
     @Override
     public void findTrack(Callback callback, String serverAddr, JSONObject requestBody) {
-//        new AuthTask("track", serverAddr, POST, requestBody.toString(), callback).execute();
-        new AuthTask1("track", serverAddr, POST, requestBody.toString(), callback).doInBackground();
+        new AuthTask("track", serverAddr, POST, requestBody.toString(), callback).execute();
+//        new AuthTask1("track", serverAddr, POST, requestBody.toString(), callback).doInBackground();
 
     }
 
     @Override
     public void findLearn(Callback callback, String serverAddr, JSONObject requestBody) {
-//        new AuthTask("learn", serverAddr, POST, requestBody.toString(), callback).execute();
-        new AuthTask1("learn", serverAddr, POST, requestBody.toString(), callback).doInBackground();
+        new AuthTask("learn", serverAddr, POST, requestBody.toString(), callback).execute();
+//        new AuthTask1("learn", serverAddr, POST, requestBody.toString(), callback).doInBackground();
     }
 
     private class AuthTask extends AsyncTask<Void, Void, Void> {
@@ -54,6 +54,7 @@ public class FindWiFiImpl implements FindWiFi {
         private final String json;
         private final String serverAddr;
         private final Callback callback;
+
 
         AuthTask(String urlPart, String serverAddr, int method, String json, Callback callback) {
             this.urlPart = urlPart;

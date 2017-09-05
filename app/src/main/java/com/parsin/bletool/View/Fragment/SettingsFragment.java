@@ -45,6 +45,14 @@ public class SettingsFragment extends Fragment {
     private TextView labelTrackInterval;
     private TextView labelLearnPeriod;
     private TextView labelTrackCounter;
+    private TextView labelOneScanPeriod;
+    private TextView labelHowManyScan;
+    private TextView fieldHowManyScan;
+    private TextView fieldOneScanPeriod;
+    private TextView labelParsinServerName;
+    private TextView labelHowManyLearning;
+    private TextView fieldHowManyLearning;
+
 
     private SharedPreferences sharedPreferences;
     private String prefUsername;
@@ -53,8 +61,10 @@ public class SettingsFragment extends Fragment {
     private int prefTrackInterval;
     private int prefLearnInterval;
     private int prefLearnPeriod;
-    private TextView labelParsinServerName;
     private String prefParsinServerName;
+    private int prefOneScanPeriod;
+    private int prefHowManyScan;
+    private int prefHowManyLearning;
 
 
     /**
@@ -95,6 +105,9 @@ public class SettingsFragment extends Fragment {
         prefTrackInterval = sharedPreferences.getInt(Constants.TRACK_INTERVAL, Constants.DEFAULT_TRACKING_INTERVAL);
         prefLearnInterval = sharedPreferences.getInt(Constants.LEARN_INTERVAL, Constants.DEFAULT_LEARNING_INTERVAL);
         prefLearnPeriod = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.DEFAULT_LEARNING_PERIOD);
+        prefOneScanPeriod = sharedPreferences.getInt(Constants.ONE_SCAN_PERIOD_NAME, Constants.ONE_SCAN_PERIOD);
+        prefHowManyScan = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.HOW_MANY_SCAN);
+        prefHowManyLearning = sharedPreferences.getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING_DEFAULT);
 
     }
 
@@ -117,9 +130,105 @@ public class SettingsFragment extends Fragment {
         learnPeriod = (TextView)rootView.findViewById(R.id.fieldLearnPeriod);
         trackCounter = (TextView) rootView.findViewById(R.id.fieldTrackCounter);
         trackInterval = (TextView)rootView.findViewById(R.id.fieldTrackInterval);
+        labelOneScanPeriod = (TextView)rootView.findViewById(R.id.labelOneScanPeriod);
+        labelHowManyScan = (TextView)rootView.findViewById(R.id.labelHowManyScan);
+        fieldOneScanPeriod = (TextView)rootView.findViewById(R.id.fieldOneScanPeriod);
+        fieldHowManyScan = (TextView)rootView.findViewById(R.id.fieldHowManyScan);
+        labelHowManyLearning = (TextView) rootView.findViewById(R.id.labelHowManyLearning);
+        fieldHowManyLearning = (TextView) rootView.findViewById(R.id.fieldHowManyLearning);
 
         // Rendering the setting page
         drawUi();
+
+        labelHowManyLearning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity()).setTitle("How Many Learning?");
+                final EditText editText = new EditText(getActivity());
+                editText.setText(fieldHowManyLearning.getText());
+                builder.setView(editText);
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strUserName = editText.getText().toString();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(Constants.HOW_MANY_LEARNING_NAME, Integer.valueOf(strUserName));
+                        fieldHowManyLearning.setText(strUserName);
+                        Constants.HOW_MANY_LEARNING_DEFAULT = Integer.valueOf(strUserName);
+                        editor.apply();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        labelHowManyScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity()).setTitle("How Many Scan?");
+                final EditText editText = new EditText(getActivity());
+                editText.setText(fieldHowManyScan.getText());
+                builder.setView(editText);
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strUserName = editText.getText().toString();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(Constants.HOW_MANY_SCAN_NAME, Integer.valueOf(strUserName));
+                        fieldHowManyScan.setText(strUserName);
+                        Constants.HOW_MANY_SCAN = Integer.valueOf(strUserName);
+                        editor.apply();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
+        labelOneScanPeriod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity()).setTitle("Edit One Scan Period");
+                final EditText editText = new EditText(getActivity());
+                editText.setText(fieldOneScanPeriod.getText());
+                builder.setView(editText);
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strUserName = editText.getText().toString();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(Constants.ONE_SCAN_PERIOD_NAME, Integer.valueOf(strUserName));
+                        fieldOneScanPeriod.setText(strUserName);
+                        Constants.ONE_SCAN_PERIOD = Integer.valueOf(strUserName);
+                        editor.apply();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         labelTrackCounter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -376,6 +485,7 @@ public class SettingsFragment extends Fragment {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putInt(Constants.TRACK_INTERVAL, trackIntervalVal);
                         trackInterval.setText(String.valueOf(trackIntervalVal));
+                        Constants.ALT_BEACON_TRACK_INTERVAL_AMOUNT = trackIntervalVal;
                         editor.apply();
                         dialog.dismiss();
                     }

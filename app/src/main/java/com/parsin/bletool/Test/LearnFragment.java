@@ -1,4 +1,8 @@
-package com.parsin.bletool.View.Fragment;
+package com.parsin.bletool.Test;
+
+/**
+ * Created by hadi on 9/2/17.
+ */
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -9,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +37,8 @@ import com.parsin.bletool.Controller.OnFragmentInteractionListener;
 import com.parsin.bletool.R;
 import com.parsin.bletool.Model.database.Event;
 import com.parsin.bletool.Model.database.InternalDataBase;
+import com.parsin.bletool.Utils.Timer;
+import com.parsin.bletool.Utils.Utils;
 import com.parsin.bletool.internal.Constants;
 import com.parsin.bletool.internal.FindUtils;
 import com.parsin.bletool.internal.wifi.WifiArrayAdapter;
@@ -41,17 +48,27 @@ import com.parsin.bletool.internal.wifi.WifiObject;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
+
+
 @SuppressLint("setJavaScriptEnabled")
 public class LearnFragment extends Fragment {
-    String strLocationName = "";
-
+    public static boolean isLearnTimerOn = false;
+    private Timer timer;
+    private int leanCounter = 0;
+    private JSONObject wifiFingerprint;
+    private String groupName;
+    private String userName;
+    private String locationName;
     private static final String TAG = LearnFragment.class.getSimpleName();
+
+    String strLocationName = "";
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,12 +76,11 @@ public class LearnFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private int msgSentCounter = 0;
-    ProgressDialog progress;
-
+    static ProgressDialog progress;
     //private variables
     private Context mContext = getActivity();
     private OnFragmentInteractionListener mListener;
-    Handler handler = new Handler();
+    static Handler handler = new Handler();
 
     private SharedPreferences sharedPreferences;
     private String strUsername;
@@ -72,7 +88,7 @@ public class LearnFragment extends Fragment {
     private String strGroup;
     private int learnIntervalVal;
     private int learnPeriodVal;
-    private String dialogMsg = "Please wait while we are collecting the Wifi APs around you...\nmsgCounter is : ";
+    private static String dialogMsg = "Please wait while we are collecting the Wifi APs around you...\nmsgCounter is : ";
 
     private WebView mWebView;
     private Button mButton;
@@ -140,11 +156,9 @@ public class LearnFragment extends Fragment {
             });
             dialog.show();
         }
-
         // Creating WiFi list adapter
         arrayList = new ArrayList<>();
         wifiArrayAdapter = new WifiArrayAdapter(getActivity(), R.layout.wifi_list_item, arrayList);
-
         // Getting values from Shared prefs for Learning
         sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
         strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
@@ -152,15 +166,14 @@ public class LearnFragment extends Fragment {
         strServer = sharedPreferences.getString(Constants.SERVER_NAME, Constants.DEFAULT_SERVER);
         learnIntervalVal = sharedPreferences.getInt(Constants.LEARN_INTERVAL, Constants.DEFAULT_LEARNING_INTERVAL);
         learnPeriodVal = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.DEFAULT_LEARNING_PERIOD);
-
         // Initialising internal DB n retriving values from it to fill our listView
         final InternalDataBase internalDataBase = new InternalDataBase(getActivity());
-
         List<Event> eventList = internalDataBase.getAllEvents();
         for (Event event : eventList) {
             WifiObject wifi = new WifiObject(event.getWifiName(), event.getWifiGroup(), event.getWifiUser());
             wifiArrayAdapter.add(wifi);
         }
+//        timer = new Timer(sendPayloadTask, "LearnThread", 0, false);
 
     }
 
@@ -168,8 +181,6 @@ public class LearnFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_learn, container, false);
-
-
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(wifiArrayAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,7 +193,6 @@ public class LearnFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (items[item].equals("Delete")) {
-
                             InternalDataBase db = new InternalDataBase(getActivity());
                             WifiObject obj = arrayList.get(position);
                             Event event = new Event(obj.wifiName, obj.grpName, obj.userName);
@@ -230,15 +240,12 @@ public class LearnFragment extends Fragment {
                 builder.show();
             }
         });
-
-
         mWebView = (WebView) rootView.findViewById(R.id.web_view);
         WebSettings mWebSettings = mWebView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new WebAppInterface(getActivity()), "Android");
         mWebView.loadUrl("file:///android_asset/leaflet/test-map.html");
         mButton = (Button) rootView.findViewById(R.id.button);
-
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,7 +255,6 @@ public class LearnFragment extends Fragment {
 
             }
         });
-
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,9 +292,6 @@ public class LearnFragment extends Fragment {
                 alert.show();
             }
         });
-
-//        new BLESetting(getActivity());
-
         return rootView;
     }
 
@@ -318,10 +321,9 @@ public class LearnFragment extends Fragment {
     private Runnable runnableCode = new Runnable() {
         @Override
         public void run() {
-            if (hashMap.size() > 0){
+            if (hashMap.size() > 0) {
                 // Passing values to WifiIntent for further processing
                 if (Build.VERSION.SDK_INT >= 23) {
-
 //                if(FindUtils.isWiFiAvailable(mContext) && FindUtils.hasAnyLocationPermission(mContext)) {
                     sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
                     strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
@@ -356,9 +358,8 @@ public class LearnFragment extends Fragment {
                     @Override
                     public void run() {
                         // Update your UI or do any Post job after the time consuming task
-                        updateUI();
+                        updateUI(789);
                         // remember to dismiss the progress dialog on UI thread
-
                     }
                 });
             }
@@ -381,7 +382,6 @@ public class LearnFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onDetach() {
         /*if (mGatt == null) {
@@ -399,43 +399,57 @@ public class LearnFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser)
-            EventBus.getDefault().register(this);
-        else
-            EventBus.getDefault().unregister(this);
-//        if (isVisibleToUser)
-
+        log("learn visibility: " + String.valueOf(isVisibleToUser));
+        if (isVisibleToUser) {
+            /*if (!EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().register(this);
+                log("event bus has been registered");
+            }*/
+            if (getActivity() != null) {
+                /*if (!isLearnTimerOn)
+                    changeTimerState();*/
+            }
+        } else {
+            /*if (EventBus.getDefault().isRegistered(this))
+                EventBus.getDefault().unregister(this);*/
+            /*if (getActivity() != null) {
+                if (isLearnTimerOn)
+                    changeTimerState();
+            }*/
+        }
     }
 
-    // Logging message in form of Toasts
     private void logMeToast(String message) {
         Log.e(TAG, message);
-        toast(message);
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
     }
 
     private void toast(String s) {
         Toast.makeText(getActivity(), s, Toast.LENGTH_LONG).show();
     }
 
-    private void updateUI() {
-        ++msgSentCounter;
-        progress.setMessage(dialogMsg + String.valueOf(msgSentCounter));
+    /**
+     * @param leanCounter
+     * if learnCounter is greater than 0 it will update amount of msgSentCounter in Learning Progress
+     * else it will finish progress
+     */
+    public static void updateUI(int leanCounter) {
+        handler.post(new Runnable() {
+        @Override
+            public void run() {
+            if (leanCounter > 0)
+                progress.setMessage(dialogMsg + String.valueOf(leanCounter));
+            else
+                if (progress.isShowing())
+                    progress.dismiss();
+            }
+        });
     }
 
-    @Subscribe
-    public void onBeaconReceive(HashMap<String, ArrayList<Integer>> hashMap2) {
-        /*TODO: put some delay bet learning and onBeaconReceive because
-        there is a probability that learn start before onBeaconReceive so that hashMap wont be valid */
-        this.hashMap = new HashMap<>(hashMap2);
-        for (String s : hashMap2.keySet())
-            Log.d(TAG, "onBeaconReceive: " + s + " : " + hashMap2.get(s));
-        if (msgSentCounter <= Constants.HOW_MANY_LEARNING_DEFAULT && isLearningAllowed){
-            handler.post(runnableCode);
-        }else{
-            isLearningAllowed = false;
-            progress.dismiss();
-        }
+    private void log(String message) {
+        Log.d(TAG, message);
     }
+
 
     public class WebAppInterface {
         Context mContext;
@@ -472,6 +486,9 @@ public class LearnFragment extends Fragment {
                 insertIntoList(wifi);
                 internalDataBase.addEvent(new Event(strLocationName, strGroup, strUsername));
 //                handler.post(runnableCode);
+                Intent intent = new Intent(getActivity(), LearnIntentService.class);
+                intent.putExtra("location", strLocationName);
+                mContext.startService(intent);
                 isLearningAllowed = true;
                 Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
             } else {
@@ -495,31 +512,6 @@ public class LearnFragment extends Fragment {
                     "com.google.android.maps.MapsActivity");
             mIntent.setComponent(component);
             startActivity(mIntent);
-        }
-    }
-
-
-    ////////////////////////////////// BLE /////////////////////////////////////////
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_PERMISSIONS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Toast.makeText(mContext, "Permission granted, Loading Mission Control!",
-                            Toast.LENGTH_SHORT)
-                            .show();
-                } else {
-                    // Permission Denied
-                    Toast.makeText(mContext, "App need FINE LOCATION ACCESS to discover nearby Wifi APs",
-                            Toast.LENGTH_SHORT)
-                            .show();
-                }
-                return;
-            }
         }
     }
 

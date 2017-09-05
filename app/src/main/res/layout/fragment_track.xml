@@ -52,7 +52,7 @@
     <WebView
         android:id="@+id/web_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <Button
         android:id="@+id/button"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:text="Button"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 
     <LinearLayout

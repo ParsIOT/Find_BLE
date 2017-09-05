@@ -1,1 +1,0 @@
-{"locations":{"-115,76":{"accuracy":100,"count":5},"156,40":{"accuracy":80,"count":5},"p1":{"accuracy":100,"count":2},"p2":{"accuracy":0,"count":1}},"message":"Found 4 unique locations in group at","success":true}

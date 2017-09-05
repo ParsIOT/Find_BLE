@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -19,7 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -28,32 +29,39 @@ import com.parsin.bletool.Controller.OnFragmentInteractionListener;
 import com.parsin.bletool.Controller.Adapters.PagerAdapter;
 import com.parsin.bletool.R;
 import com.parsin.bletool.Utils.StaticObjects;
+import com.parsin.bletool.Utils.Utils;
 import com.parsin.bletool.internal.Constants;
 
 
-import java.io.File;
-import java.io.IOException;
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+import org.greenrobot.eventbus.EventBus;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, BeaconConsumer {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int BLUETOOTH_ENABLE_REQUEST_ID = 10;
+    private static final int WEIGHTED_AVERAGE_LIST_SIZE = 3;
+    private final int weight_arr[] = {1, 3, 10};
 
     NavigationView navigationView;
 
     final private int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private SharedPreferences sharedPreferences;
+    private BeaconManager beaconManager;
+    private int altBeaconCounter = 0;
+    private HashMap<String, ArrayList<Integer>> hashMap;
+    private HashMap<String, ArrayList<Integer>> weightedHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +84,6 @@ public class MainActivity extends AppCompatActivity
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED) {
-
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_FINE_LOCATION)) {
                 } else {
@@ -90,7 +97,6 @@ public class MainActivity extends AppCompatActivity
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, 0);
         StaticObjects.ParsinServerIp = sharedPreferences.getString(StaticObjects.PARSIN_SERVER_NAME, StaticObjects.ParsinServerIp);
         setDefaultPrefs();
-
 /*
         // Set the Learn Fragment as default
         Fragment fragment = new LearnFragment(); //It's better to be changed to TrackFragment
@@ -99,7 +105,6 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.content, fragment)
                 .commit();
 */
-
         ///////////////////////////////////////////////////////////////////////////////////////////////
         navigationView.getMenu().getItem(0).setChecked(true);
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -108,6 +113,30 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST_ID);
         } else setupViewPagerView();
 
+        hashMap = new HashMap<>();
+        weightedHashMap = new HashMap<>();
+        setupAltBeacon();
+
+    }
+
+    private void setupAltBeacon() {
+        beaconManager = BeaconManager.getInstanceForApplication(getApplicationContext());
+        beaconManager.getBeaconParsers().clear();
+        // BeaconManager setup
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:0-3=4c000215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        // Detect the main identifier (UID) frame:
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
+        // Detect the telemetry (TLM) frame:
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("x,s:0-1=feaa,m:2-2=20,d:3-3,d:4-5,d:6-7,d:8-11,d:12-15"));
+        // Detect the URL frame:
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-21v"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-20v"));
+        beaconManager.setForegroundScanPeriod(Constants.ONE_SCAN_PERIOD);
+        beaconManager.setBackgroundScanPeriod(Constants.ONE_SCAN_PERIOD);
 
     }
 
@@ -180,12 +209,22 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         navigationView.getMenu().getItem(0).setChecked(true);
         super.onPause();
+        if (beaconManager.isBound(this)) {
+                    /*Only do this in onDestroy() not onPause()
+                    Can't be bind() & unbind() several times*/
+            beaconManager.unbind(this);
+        }
     }
 
     @Override
     protected void onResume() {
         navigationView.getMenu().getItem(0).setChecked(true);
         super.onResume();
+        if (!beaconManager.isBound(this)) {
+            beaconManager.bind(this);
+            Log.d(TAG, "onCreate: service bind");
+            //beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout(URI_BEACON_LAYOUT));
+        }
     }
 
     @Override
@@ -241,8 +280,67 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onBeaconServiceConnect() {
+        beaconManager.addRangeNotifier(new RangeNotifier() {
+            @Override
+            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+                if (beacons.size() > 0) {
+                    altBeaconCounter++;
+                    for (Beacon beacon : beacons) {
+                        if (!hashMap.containsKey(beacon.getBluetoothAddress())) {
+                            ArrayList<Integer> arrayList = new ArrayList<>();
+                            arrayList.add(beacon.getRssi());
+                            hashMap.put(beacon.getBluetoothAddress(), arrayList);
+                        } else {
+                            ArrayList<Integer> arrayList = hashMap.get(beacon.getBluetoothAddress());
+                            arrayList.add(beacon.getRssi());
+                            hashMap.put(beacon.getBluetoothAddress(), arrayList);
+                        }
+                        Log.d(TAG, "didRangeBeaconsInRegion: name -> " + beacon.getBluetoothName() +
+                                " RSSI ->" + beacon.getRssi());
+                    }
+                    if (altBeaconCounter >= Constants.HOW_MANY_SCAN) {
+//                        handler.post(runnableCode);
+                        Log.d(TAG, "didRangeBeaconsInRegion: eventbus want post sth");
+                      /*  int weightedRes = 0;
+                        int weight_sum = Utils.getSum(weight_arr);
+                        for (String s: hashMap.keySet()){
+                            if (weightedHashMap.containsKey(s)){
+                                ArrayList<Integer> arrayList = hashMap.get(s);
+                                arrayList.add(Utils.getMedian(hashMap.get(s)));
+                                if (arrayList.size() <= WEIGHTED_AVERAGE_LIST_SIZE){
+                                    for (int i = 2; i < WEIGHTED_AVERAGE_LIST_SIZE; i++) {
+                                        if (arrayList.size() == i) {
+                                            weightedRes = 5;
+                                        }
+                                    }
+                                }
+                            }else{
+                                int median = Utils.getMedian(hashMap.get(s));
+                                ArrayList<Integer> arrayList = new ArrayList<>();
+                                arrayList.add(median);
+                                weightedHashMap.put(s, arrayList);
+                                weightedRes = median;
+                            }
+                        }*/
+                        Utils.hashMap = new HashMap<>(hashMap);
+                        EventBus.getDefault().post(hashMap);
+                        altBeaconCounter = 0;
+                        hashMap.clear();
+                    }
+                }
+                Log.d(TAG, "beacon: size -> " );
+            }
 
+        });
 
+        try {
+            beaconManager.startRangingBeaconsInRegion(new Region("beaconscanner", null, null, null));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -293,53 +391,6 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    public String uploadDb(String filename) {
-        String url = "http://192.168.0.82:5000/upload_db";
-        final String res = "";
-        try {
-            final MediaType MEDIA_TYPE = MediaType.parse("text/*");
-            OkHttpClient client = new OkHttpClient();
 
-            SharedPreferences sharedPreferences;
-            sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, 0);
-            String strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
-
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", filename, RequestBody.create(MEDIA_TYPE, new File(filename)))
-                    .addFormDataPart("ips_group", strGroup)
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(requestBody)
-                    .build();
-
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                }
-
-                @Override
-                public void onResponse(Call call, final Response response) throws IOException {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Toast.makeText(MainActivity.this, response.body().string(), Toast.LENGTH_SHORT).show();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
 
 }

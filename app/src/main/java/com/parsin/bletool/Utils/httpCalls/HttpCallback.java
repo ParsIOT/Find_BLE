@@ -1,7 +1,7 @@
 package com.parsin.bletool.Utils.httpCalls;
 
 import android.os.Handler;
-
+import android.os.Looper;
 
 
 import java.io.IOException;
@@ -23,8 +23,8 @@ public class HttpCallback implements Callback {
     //Constructor
     public HttpCallback(Callback delegate) {
         this.delegate = delegate;
-        //this.handler = new Handler(Looper.getMainLooper());
-        this.handler = new Handler();
+        this.handler = new Handler(Looper.getMainLooper());
+//        this.handler = new Handler();
     }
 
     @Override

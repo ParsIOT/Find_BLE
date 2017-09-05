@@ -1,7 +1,6 @@
-package com.parsin.bletool.internal.wifi;
+package com.parsin.bletool.internal.wifi.Me;
 
 import android.annotation.TargetApi;
-import android.app.IntentService;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
@@ -19,11 +18,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.parsin.bletool.Utils.Utils;
 import com.parsin.bletool.Utils.httpCalls.FindWiFi;
 import com.parsin.bletool.Utils.httpCalls.FindWiFiImpl;
 import com.parsin.bletool.internal.Constants;
-
+import com.parsin.bletool.internal.wifi.WifiData;
+import com.parsin.bletool.internal.wifi.WifiIntentReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +31,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,9 +40,12 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+/**
+ * Created by hadi on 8/21/17.
+ */
 
-public class WifiIntentReceiver extends IntentService {
-
+public class ScanAndSendBle{
+    private Context mContext;
     private static final int MIN_RSSI = -80;
     private BluetoothLeScanner mLEScanner;
     private List<ScanFilter> filters;
@@ -76,97 +77,21 @@ public class WifiIntentReceiver extends IntentService {
     private static final Set<Character> AD_HOC_HEX_VALUES =
             new HashSet<Character>(Arrays.asList('2', '6', 'a', 'e', 'A', 'E'));
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     */
-    public WifiIntentReceiver() {
-        super(TAG);
-    }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public ScanAndSendBle(Context mContext, Intent intent) {
+        this.mContext = mContext;
+        this.intent = intent;
         mHandler = new Handler();
         hashMap = new HashMap<>();
-
-    }
-
-    @Override
-    protected void onHandleIntent(Intent intent) {
-        this.intent = intent;
-        /*mHandler.post(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 doBle();
             }
-        });*/
+        }).start();
 
 
-        client = new FindWiFiImpl(getApplicationContext());
 
-        // Getting all the value passed from previous Fragment
-        eventName = intent.getStringExtra("event");
-        userName = intent.getStringExtra("userName");
-        groupName = intent.getStringExtra("groupName");
-        serverName = intent.getStringExtra("serverName");
-        locationName = intent.getStringExtra("locationName");
-        Long timeStamp = System.currentTimeMillis() / 1000;
-
-        hashMap = new HashMap<>((HashMap<String, ArrayList<Integer>>) intent.getSerializableExtra("hashMap"));
-        mWifiData = new WifiData();
-        //mWifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-        //WifiLock wifilock = mWifiManager.createWifiLock(WifiManager.WIFI_MODE_FULL, "LockTag");
-
-        // getting all wifi APs and forming data payload
-        try {
-
-            //doBle();
-
-            JSONObject wifiResults;
-            JSONArray wifiResultsArray = new JSONArray();
-            //List<ScanResult> mResults = mWifiManager.getScanResults();
-            //FIXME what is different bet this and """for (ScanResult result : mWifiManager.getScanResults())"""
-
-/*            wifilock.acquire();
-
-            List<ScanResult> mResults = mWifiManager.getScanResults();
-            mWifiManager.startScan();
-
-            wifilock.release();*/
-
-            for (String s : hashMap.keySet()) {
-                int median = Utils.getMedian(hashMap.get(s));
-                Log.d(TAG, "onHandleIntent: median: " + median + " " + s + " : " + hashMap.get(s));
-                wifiResults = new JSONObject();
-//                if (shouldLog(result)){
-//                Log.d("learning :", "Name=" + result.SSID + "  Mac=" + result.BSSID + "  RSSI=" + result.level);
-                wifiResults.put("mac", s);
-                wifiResults.put("rssi", median);
-                wifiResultsArray.put(wifiResults);
-                //}
-
-            }
-
-            Log.d(TAG, "onHandleIntent: /////////////////////////////////////////////////");
-            wifiFingerprint = new JSONObject();
-            wifiFingerprint.put("group", groupName);
-            wifiFingerprint.put("username", userName);
-            wifiFingerprint.put("location", locationName);
-            wifiFingerprint.put("time", timeStamp);
-            wifiFingerprint.put("wifi-fingerprint", wifiResultsArray);
-            Log.d(TAG, String.valueOf(wifiFingerprint));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        // Send the packet to server
-//        int threadId = android.os.Process.getThreadPriority(android.os.Process.myTid());
-//        Log.e("Thread ID" , String.valueOf(threadId));
-//        Log.e("Thread ID" , String.valueOf(threadId));
-//        Log.e("Thread ID" , String.valueOf(threadId));
-        //wifilock.acquire();
-        sendPayload(eventName, serverName, wifiFingerprint);
-        //wifilock.release();
     }
 
     // Function to check to check the route(learn or track) and send data to server
@@ -175,6 +100,7 @@ public class WifiIntentReceiver extends IntentService {
             Callback postTrackEvent = new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    Log.e(TAG, "Failed request: " + e.getMessage());
                 }
 
                 @Override
@@ -201,7 +127,7 @@ public class WifiIntentReceiver extends IntentService {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.e(TAG, "Failed request: " + e.getMessage());
-                    Toast.makeText(getApplicationContext(), "Can't connect to server.",
+                    Toast.makeText(mContext.getApplicationContext(), "Can't connect to server.",
                             Toast.LENGTH_SHORT).show();
                 }
 
@@ -222,7 +148,7 @@ public class WifiIntentReceiver extends IntentService {
         if (location != null && !location.isEmpty()) {
             Intent intent = new Intent(Constants.TRACK_BCAST);
             intent.putExtra("location", location);
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(mContext.getApplicationContext()).sendBroadcast(intent);
         }
     }
 
@@ -245,7 +171,7 @@ public class WifiIntentReceiver extends IntentService {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void doBle() {
-        mBluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE))
+        mBluetoothAdapter = ((BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE))
                 .getAdapter();
         mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
         if (mScanCallback == null) {
@@ -464,7 +390,7 @@ public class WifiIntentReceiver extends IntentService {
 
 
     public void sendBleToServer() {
-        client = new FindWiFiImpl(getApplicationContext());
+        client = new FindWiFiImpl(mContext.getApplicationContext());
         // Getting all the value passed from previous Fragment
         eventName = intent.getStringExtra("event");
         userName = intent.getStringExtra("userName");
@@ -567,9 +493,10 @@ public class WifiIntentReceiver extends IntentService {
         @Override
         public void onScanFailed(int errorCode) {
             super.onScanFailed(errorCode);
-            Toast.makeText(WifiIntentReceiver.this, "Scan failed with error: " + errorCode, Toast.LENGTH_LONG)
+            Toast.makeText(mContext, "Scan failed with error: " + errorCode, Toast.LENGTH_LONG)
                     .show();
         }
     }
+
 
 }

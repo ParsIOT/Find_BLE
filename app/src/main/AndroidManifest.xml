@@ -92,9 +92,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_location_learned"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".View.LogDbActivity">
+        <activity android:name=".View.LogDbActivity" />
 
-        </activity>
+        <service
+            android:name=".Test.LearnIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

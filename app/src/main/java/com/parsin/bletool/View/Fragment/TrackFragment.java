@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -46,6 +48,14 @@ import com.parsin.bletool.internal.Constants;
 import com.parsin.bletool.internal.FindUtils;
 import com.parsin.bletool.internal.wifi.WifiIntentReceiver;
 
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.BeaconParser;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,9 +64,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.StringJoiner;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -105,7 +116,7 @@ public class TrackFragment extends Fragment {
     private boolean getNotifFromServer = true;
     Handler handler = new Handler();
     private List<Integer> adverHasShown = new ArrayList<>();
-
+    private HashMap<String, ArrayList<Integer>> hashMap;
 
     private ArrayList<Advertisement> advertisements;
     //FIXME time of showing notif is not adopted with THRESH
@@ -118,7 +129,7 @@ public class TrackFragment extends Fragment {
     private int trackCounterAdv;
     private String imHere = null;
     private DaoSession mDaoSession;
-
+    private int altBeaconCounter = 0;
 
     /**
      * Use this factory method to create a new instance of
@@ -150,6 +161,7 @@ public class TrackFragment extends Fragment {
         getNotifFromServer = true;
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        hashMap = new HashMap<>();
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -181,8 +193,10 @@ public class TrackFragment extends Fragment {
         strGroup = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
         strParsinServer = sharedPreferences.getString(StaticObjects.PARSIN_SERVER_NAME, StaticObjects.ParsinServerIp);
         strServer = sharedPreferences.getString(Constants.SERVER_NAME, Constants.DEFAULT_SERVER);
-        strUsername = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
+        strUsername = String.valueOf(sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME));
         trackVal = sharedPreferences.getInt(Constants.TRACK_INTERVAL, Constants.DEFAULT_TRACKING_INTERVAL);
+
+
     }
 
     @Override
@@ -215,18 +229,25 @@ public class TrackFragment extends Fragment {
                 return false;
             }
         });
-
         trackCounterAdv = trackNotifyTRESH;
-
         advertisements = new ArrayList<>();
 
         Intent intent = getActivity().getIntent();
         if (intent.hasExtra("location_selected"))
             imHere = intent.getStringExtra("location_selected");
 
+
+        /*
         handler.post(runnableCode);
+        ATTENTION: commented for using altBeacon.
+        */
+
         LocalBroadcastManager.getInstance(mContext).registerReceiver(mMessageReceiver,
                 new IntentFilter(Constants.TRACK_BCAST));
+
+
+        EventBus.getDefault().register(this);
+
         return rootView;
     }
 
@@ -304,26 +325,28 @@ public class TrackFragment extends Fragment {
                 intent.putExtra("userName", strUsername);
                 intent.putExtra("serverName", strServer);
                 intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
+                intent.putExtra("hashMap", hashMap);
                 mContext.startService(intent);
                 Log.d(TAG, "run: log4");
 
             } else if (Build.VERSION.SDK_INT < 23) {
-                if (FindUtils.isWiFiAvailable(mContext)) {
-                    Intent intent = new Intent(mContext, WifiIntentReceiver.class);
-                    intent.putExtra("event", Constants.TRACK_TAG);
-                    intent.putExtra("groupName", strGroup);
-                    intent.putExtra("userName", strUsername);
-                    intent.putExtra("serverName", strServer);
-                    intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
-                    mContext.startService(intent);
-                }
+//                if (FindUtils.isWiFiAvailable(mContext)) { TODO: uncomment this later
+                Intent intent = new Intent(mContext, WifiIntentReceiver.class);
+                intent.putExtra("event", Constants.TRACK_TAG);
+                intent.putExtra("groupName", strGroup);
+                intent.putExtra("userName", strUsername);
+                intent.putExtra("serverName", strServer);
+                intent.putExtra("locationName", sharedPreferences.getString(Constants.LOCATION_NAME, ""));
+                intent.putExtra("hashMap", hashMap);
+                mContext.startService(intent);
                 Log.d(TAG, "run: log5");
                 Log.d(TAG, "run: " + currLocation);
 
             } else {
                 return;
             }
-            handler.postDelayed(runnableCode, trackVal * 1000);
+            //handler.postDelayed(runnableCode, trackVal * 1000);
+            //ATTENTION: commented for using Altbeacon.
         }
     };
 
@@ -355,15 +378,23 @@ public class TrackFragment extends Fragment {
         if (!isVisibleToUser && mContext != null) {
             super.onDetach();
             try {
-                handler.removeCallbacks(runnableCode);
+                Log.d(TAG, "setUserVisibleHint: this is test. remove me. false");
+                EventBus.getDefault().unregister(this);
+                /*handler.removeCallbacks(runnableCode);*/
+                //ATTENTION: commented for using Altbeacon.
                 LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mMessageReceiver);
                 getNotifFromServer = true;
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             if (mContext != null) {
-                handler.post(runnableCode);
+                Log.d(TAG, "setUserVisibleHint: this is test. remove me. true");
+                if (!EventBus.getDefault().isRegistered(this))
+                    EventBus.getDefault().register(this);
+                /*handler.post(runnableCode);*/
+                //ATTENTION: commented for using Altbeacon.
                 LocalBroadcastManager.getInstance(mContext).registerReceiver(mMessageReceiver,
                         new IntentFilter(Constants.TRACK_BCAST));
                 parsin.getAdvJSON(strParsinServer +
@@ -459,7 +490,6 @@ public class TrackFragment extends Fragment {
         });
     }
 
-
     public String uploadDb(String filename) {
         String url = "http://192.168.0.82:5000/upload_db";
         final String res = "";
@@ -509,8 +539,8 @@ public class TrackFragment extends Fragment {
         return res;
     }
 
-    private void changeTrackCounter(){
-        if (intTrackCounterDuration <= Constants.DEFAULT_TRACKING_COUNTER && imHere != null){
+    private void changeTrackCounter() {
+        if (intTrackCounterDuration <= Constants.DEFAULT_TRACKING_COUNTER && imHere != null) {
             intTrackCounterDuration++;
             fieldTrackCounter.setText(String.valueOf(intTrackCounterDuration));
             trackCounterContainer.setVisibility(View.VISIBLE);
@@ -520,12 +550,22 @@ public class TrackFragment extends Fragment {
 
             LocationValidation l = new LocationValidation(null, imHere, currLocation, strDt);
             mDaoSession.getLocationValidationDao().insert(l);
-        }else {
+        } else {
             trackCounterContainer.setVisibility(View.GONE);
             imHere = null;
             intTrackCounterDuration = 0;
         }
     }
+
+    @Subscribe
+    public void onBeaconReceive(HashMap<String, ArrayList<Integer>> hashMap2){
+        Log.d(TAG, "onBeaconReceive: this is for test :" + hashMap2.size());
+        this.hashMap = new HashMap<>(hashMap2);
+        for (String s : hashMap2.keySet())
+            Log.d(TAG, "onBeaconReceive: " + s + " : " + hashMap2.get(s));
+        handler.post(runnableCode);
+    }
+
 
     private class WebAppInterface {
         Context mContext;

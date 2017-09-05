@@ -3,6 +3,7 @@ package com.parsin.bletool.Utils;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,10 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -37,7 +42,7 @@ public class Utils {
     private static final String TAG = "Utils";
     private static int news_item_dp = 110;
 
-    public static Semaphore semaphore = new Semaphore(1);
+    public static HashMap<String, ArrayList<Integer>> hashMap = new HashMap<>();
 
     // Mohsen Tabasi
     public static String toPersianNum(String s, boolean horuf) {
@@ -255,6 +260,28 @@ public class Utils {
         a.setDuration((int) (targetHeight / v.getContext().getResources().getDisplayMetrics().density));
         v.startAnimation(a);
     }
+
+    public static int getMedian(ArrayList<Integer> list) {
+
+        if (list.size() == 1)
+            return list.get(0);
+
+        int res = 0;
+        Collections.sort(list);
+        int middle = list.size() / 2;
+        if (middle % 2 == 0)
+            res = (int) (list.get(middle) + list.get(middle + 1)) / 2;
+        else
+            res = list.get(middle);
+        return res;
+    }
+
+    public static int getSum(int[] list){
+        int sum = 0;
+        for (int i :list) sum = sum + i;
+        return sum;
+    }
+
 
 
 
