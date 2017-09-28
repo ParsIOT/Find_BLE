@@ -6,7 +6,6 @@ public class Constants {
     public static int DEFAULT_BAR = 60;
     private Constants() {
     }
-
 //    public static double[] weightArr = {0.1995, 0.1760, 0.1210, 0.0648, 0.027, 0.005};
     public static double[] weightArr = {0.1995, 0.1760, 0.1210};
     private static final String PACKAGE_NAME = "om.find.wifitool";
@@ -26,6 +25,7 @@ public class Constants {
     public static final String ONE_SCAN_PERIOD_NAME = PACKAGE_NAME + "oneScanPeriod";
     public static final String HOW_MANY_SCAN_NAME = PACKAGE_NAME + "howManyScan";
     public static final String HOW_MANY_LEARNING_NAME = PACKAGE_NAME + "howManyLearning";
+    public static final String SendPayloadPeriod_NAME = PACKAGE_NAME + "SendPayloadPeriod";
     //Default values
     public static final String DEFAULT_USERNAME = "hadi";
 
@@ -40,7 +40,7 @@ public class Constants {
 
     public static int ONE_SCAN_PERIOD = 300;
     public static int HOW_MANY_SCAN = 10;
-    public static int HOW_MANY_LEARNING_DEFAULT = 100;
+    public static int HOW_MANY_LEARNING_DEFAULT = 10;
 
     public static int SEND_PAYLOAD_PERIOD = 3000;
 

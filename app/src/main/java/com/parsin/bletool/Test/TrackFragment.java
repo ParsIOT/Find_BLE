@@ -235,7 +235,7 @@ public class TrackFragment extends Fragment {
                         Log.d(TAG, body);
                         try {
                             JSONObject json = new JSONObject(body);
-                            currLocation = json.getString("location");
+                            currLocation = json.getString("knn");
                             updateMap(currLocation);
                             log("currLocation : " + currLocation);
                         } catch (JSONException e) {

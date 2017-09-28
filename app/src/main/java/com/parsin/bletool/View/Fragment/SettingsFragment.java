@@ -52,6 +52,8 @@ public class SettingsFragment extends Fragment {
     private TextView labelParsinServerName;
     private TextView labelHowManyLearning;
     private TextView fieldHowManyLearning;
+    private TextView labelSendPayloadPeriod;
+    private TextView fieldSendPayloadPeriod;
 
 
     private SharedPreferences sharedPreferences;
@@ -65,6 +67,8 @@ public class SettingsFragment extends Fragment {
     private int prefOneScanPeriod;
     private int prefHowManyScan;
     private int prefHowManyLearning;
+    private int prefSendPayloadPeriod;
+
 
 
     /**
@@ -108,6 +112,7 @@ public class SettingsFragment extends Fragment {
         prefOneScanPeriod = sharedPreferences.getInt(Constants.ONE_SCAN_PERIOD_NAME, Constants.ONE_SCAN_PERIOD);
         prefHowManyScan = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.HOW_MANY_SCAN);
         prefHowManyLearning = sharedPreferences.getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING_DEFAULT);
+        prefSendPayloadPeriod = sharedPreferences.getInt(Constants.SendPayloadPeriod_NAME, Constants.SEND_PAYLOAD_PERIOD);
 
     }
 
@@ -136,9 +141,42 @@ public class SettingsFragment extends Fragment {
         fieldHowManyScan = (TextView)rootView.findViewById(R.id.fieldHowManyScan);
         labelHowManyLearning = (TextView) rootView.findViewById(R.id.labelHowManyLearning);
         fieldHowManyLearning = (TextView) rootView.findViewById(R.id.fieldHowManyLearning);
+        labelSendPayloadPeriod = (TextView) rootView.findViewById(R.id.labelSendPayloadPeriod);
+        fieldSendPayloadPeriod = (TextView) rootView.findViewById(R.id.fieldSendPayloadPeriod);
 
         // Rendering the setting page
         drawUi();
+
+        labelSendPayloadPeriod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(getActivity()).setTitle("Send Payload Period");
+                final EditText editText = new EditText(getActivity());
+                editText.setText(fieldSendPayloadPeriod.getText());
+                builder.setView(editText);
+                builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String strUserName = editText.getText().toString();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt(Constants.SendPayloadPeriod_NAME, Integer.valueOf(strUserName));
+                        fieldHowManyLearning.setText(strUserName);
+                        Constants.SEND_PAYLOAD_PERIOD = Integer.valueOf(strUserName);
+                        editor.apply();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
+
 
         labelHowManyLearning.setOnClickListener(new View.OnClickListener() {
             @Override

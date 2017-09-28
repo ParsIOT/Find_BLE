@@ -44,8 +44,8 @@ public class LearnIntentService extends IntentService {
     private String locationName = " ";
     private String strServer;
     private int msgSentCounter;
+    private JSONArray fingerprints = new JSONArray();
     private HashMap<String, ArrayList<Integer>> weightHashMap;
-
 
     public LearnIntentService() {
         super("LearnIntentService");
@@ -70,10 +70,38 @@ public class LearnIntentService extends IntentService {
 
         for (int i = 1; i <= Constants.HOW_MANY_LEARNING_DEFAULT; i++) {
             log(String.valueOf(i));
-            sendPayloadTask.run();
-        }
-        LearnFragment.updateUI(-1);
+            try {
+                JSONObject wifiResults;
+                JSONArray wifiResultsArray = new JSONArray();
+                Long timeStamp = System.currentTimeMillis() / 1000;
+                for (String s : hashMap.keySet()) {
+                    int median = Utils.getMedian(hashMap.get(s));
+                    wifiResults = new JSONObject();
+                    wifiResults.put("mac", s);
+                    wifiResults.put("rssi", median);
+                    wifiResultsArray.put(wifiResults);
+                }
+                log("\n");
+                wifiFingerprint = new JSONObject();
+                wifiFingerprint.put("group", groupName);
+                wifiFingerprint.put("username", userName);
+                wifiFingerprint.put("location", locationName);
+                wifiFingerprint.put("time", timeStamp);
+                wifiFingerprint.put("wifi-fingerprint", wifiResultsArray);
 
+                fingerprints.put(wifiFingerprint);
+
+                ++msgSentCounter;
+//                EventBus.getDefault().post(msgSentCounter);
+                LearnFragment.updateUI(msgSentCounter);
+                log("event posted");
+                Thread.sleep(Constants.SEND_PAYLOAD_PERIOD);
+            } catch (JSONException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        sendPayloadTask.run();
+        LearnFragment.updateUI(-1);
         log("service is going to be finished");
     }
 
@@ -87,32 +115,18 @@ public class LearnIntentService extends IntentService {
         public void run() {
             log(Thread.currentThread().getName());
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+            JSONObject resJson = new JSONObject();
             try {
-                JSONObject wifiResults;
-                JSONArray wifiResultsArray = new JSONArray();
-                Long timeStamp = System.currentTimeMillis() / 1000;
-                for (String s : hashMap.keySet()) {
-                    int median = Utils.getMedian(hashMap.get(s));
-                    log("onHandleIntent: median: " + median + " " + s + " : " + hashMap.get(s));
-                    wifiResults = new JSONObject();
-                    wifiResults.put("mac", s);
-                    wifiResults.put("rssi", median);
-                    wifiResultsArray.put(wifiResults);
-                }
-                log("\n");
-                wifiFingerprint = new JSONObject();
-                wifiFingerprint.put("group", groupName);
-                wifiFingerprint.put("username", userName);
-                wifiFingerprint.put("location", locationName);
-                wifiFingerprint.put("time", timeStamp);
-                wifiFingerprint.put("wifi-fingerprint", wifiResultsArray);
+                resJson.put("fingerprints", fingerprints);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             OkHttpClient client = new OkHttpClient();
-            RequestBody body = RequestBody.create(JSON, String.valueOf(wifiFingerprint));
+            RequestBody body = RequestBody.create(JSON, String.valueOf(resJson));
             Request request = new Request.Builder()
-                    .url(Constants.DEFAULT_SERVER + "learn")
+                    .url(Constants.DEFAULT_SERVER + "bulklearn")
                     .post(body)
                     .build();
             client.newCall(request).enqueue(new Callback() {
@@ -129,15 +143,7 @@ public class LearnIntentService extends IntentService {
                 }
             });
             log("payload has been sent");
-            ++msgSentCounter;
-            EventBus.getDefault().post(msgSentCounter);
-            LearnFragment.updateUI(msgSentCounter);
-            log("event posted");
-            try {
-                Thread.sleep(Constants.SEND_PAYLOAD_PERIOD);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
         }
     };
 
@@ -156,7 +162,7 @@ public class LearnIntentService extends IntentService {
         ArrayList<Integer> resArr = new ArrayList<>();
         ArrayList<Integer> arrayList = new ArrayList<>();
 
-        for (String s : weightHashMap.keySet()){
+        for (String s : weightHashMap.keySet()) {
             log("weightHashMap : " + s + " " + Arrays.toString(weightHashMap.get(s).toArray()));
         }
 
@@ -165,7 +171,7 @@ public class LearnIntentService extends IntentService {
                 resArr.add(maxIdx);
             }
             resArr.add(0, median);
-        }else {
+        } else {
             arrayList = new ArrayList<>(weightHashMap.get(mac));
             arrSize = arrayList.size();
             resArr = new ArrayList<>(arrayList.subList(0, arrSize - 1));
@@ -175,7 +181,7 @@ public class LearnIntentService extends IntentService {
         weightHashMap.put(mac, resArr);
 
         for (int i = 0; i < WEIGHTED_AVERAGE_LIST_SIZE; i++) {
-            if(resArr.get(i) != maxIdx) {
+            if (resArr.get(i) != maxIdx) {
                 wightSum = wightSum + Constants.weightArr[i];
                 res = res + resArr.get(i) * Constants.weightArr[i];
             }
