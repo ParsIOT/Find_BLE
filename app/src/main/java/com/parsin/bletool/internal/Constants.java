@@ -25,7 +25,7 @@ public class Constants {
     public static final String ONE_SCAN_PERIOD_NAME = PACKAGE_NAME + "oneScanPeriod";
     public static final String HOW_MANY_SCAN_NAME = PACKAGE_NAME + "howManyScan";
     public static final String HOW_MANY_LEARNING_NAME = PACKAGE_NAME + "howManyLearning";
-    public static final String SendPayloadPeriod_NAME = PACKAGE_NAME + "SendPayloadPeriod";
+    public static final String SEND_PAYLOAD_PERIOD_NAME = PACKAGE_NAME + "SendPayloadPeriod";
     //Default values
     public static final String DEFAULT_USERNAME = "hadi";
 
@@ -38,10 +38,10 @@ public class Constants {
     public static int DEFAULT_LEARNING_PERIOD =5;
     public static int ALT_BEACON_TRACK_INTERVAL_AMOUNT = 10;
 
+
     public static int ONE_SCAN_PERIOD = 300;
     public static int HOW_MANY_SCAN = 10;
-    public static int HOW_MANY_LEARNING_DEFAULT = 10;
-
+    public static int HOW_MANY_LEARNING = 5;
     public static int SEND_PAYLOAD_PERIOD = 3000;
 
     // BRaodcast message tag

@@ -8,7 +8,6 @@ import android.util.Log;
 import com.parsin.bletool.Utils.Utils;
 import com.parsin.bletool.internal.Constants;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +45,8 @@ public class LearnIntentService extends IntentService {
     private int msgSentCounter;
     private JSONArray fingerprints = new JSONArray();
     private HashMap<String, ArrayList<Integer>> weightHashMap;
+    private int send_payload_period;
+    private int how_many_learning;
 
     public LearnIntentService() {
         super("LearnIntentService");
@@ -55,6 +56,8 @@ public class LearnIntentService extends IntentService {
     public void onCreate() {
         super.onCreate();
         log("onCreate");
+        how_many_learning = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING);
+        send_payload_period = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE).getInt(Constants.SEND_PAYLOAD_PERIOD_NAME, Constants.SEND_PAYLOAD_PERIOD);
         msgSentCounter = 0;
         weightHashMap = new HashMap<>();
 
@@ -68,7 +71,7 @@ public class LearnIntentService extends IntentService {
         userName = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
         strServer = sharedPreferences.getString(Constants.SERVER_NAME, Constants.DEFAULT_SERVER);
 
-        for (int i = 1; i <= Constants.HOW_MANY_LEARNING_DEFAULT; i++) {
+        for (int i = 1; i <= how_many_learning; i++) {
             log(String.valueOf(i));
             try {
                 JSONObject wifiResults;
@@ -95,7 +98,7 @@ public class LearnIntentService extends IntentService {
 //                EventBus.getDefault().post(msgSentCounter);
                 LearnFragment.updateUI(msgSentCounter);
                 log("event posted");
-                Thread.sleep(Constants.SEND_PAYLOAD_PERIOD);
+                Thread.sleep(send_payload_period);
             } catch (JSONException | InterruptedException e) {
                 e.printStackTrace();
             }

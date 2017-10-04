@@ -110,9 +110,9 @@ public class SettingsFragment extends Fragment {
         prefLearnInterval = sharedPreferences.getInt(Constants.LEARN_INTERVAL, Constants.DEFAULT_LEARNING_INTERVAL);
         prefLearnPeriod = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.DEFAULT_LEARNING_PERIOD);
         prefOneScanPeriod = sharedPreferences.getInt(Constants.ONE_SCAN_PERIOD_NAME, Constants.ONE_SCAN_PERIOD);
-        prefHowManyScan = sharedPreferences.getInt(Constants.LEARN_PERIOD, Constants.HOW_MANY_SCAN);
-        prefHowManyLearning = sharedPreferences.getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING_DEFAULT);
-        prefSendPayloadPeriod = sharedPreferences.getInt(Constants.SendPayloadPeriod_NAME, Constants.SEND_PAYLOAD_PERIOD);
+        prefHowManyScan = sharedPreferences.getInt(Constants.HOW_MANY_SCAN_NAME, Constants.HOW_MANY_SCAN);
+        prefHowManyLearning = sharedPreferences.getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING);
+        prefSendPayloadPeriod = sharedPreferences.getInt(Constants.SEND_PAYLOAD_PERIOD_NAME, Constants.SEND_PAYLOAD_PERIOD);
 
     }
 
@@ -160,7 +160,7 @@ public class SettingsFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String strUserName = editText.getText().toString();
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt(Constants.SendPayloadPeriod_NAME, Integer.valueOf(strUserName));
+                        editor.putInt(Constants.SEND_PAYLOAD_PERIOD_NAME, Integer.valueOf(strUserName));
                         fieldHowManyLearning.setText(strUserName);
                         Constants.SEND_PAYLOAD_PERIOD = Integer.valueOf(strUserName);
                         editor.apply();
@@ -193,7 +193,7 @@ public class SettingsFragment extends Fragment {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putInt(Constants.HOW_MANY_LEARNING_NAME, Integer.valueOf(strUserName));
                         fieldHowManyLearning.setText(strUserName);
-                        Constants.HOW_MANY_LEARNING_DEFAULT = Integer.valueOf(strUserName);
+                        Constants.HOW_MANY_LEARNING = Integer.valueOf(strUserName);
                         editor.apply();
                         dialog.dismiss();
                     }
@@ -585,6 +585,14 @@ public class SettingsFragment extends Fragment {
 
         // Learn period
         learnPeriod.setText(String.valueOf(prefLearnPeriod));
+
+        fieldOneScanPeriod.setText(String.valueOf(prefOneScanPeriod));
+
+        fieldHowManyScan.setText(String.valueOf(prefHowManyScan));
+
+        fieldHowManyLearning.setText(String.valueOf(prefHowManyLearning));
+
+
 
     }
 

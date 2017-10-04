@@ -62,6 +62,7 @@ public class TrackFragment extends Fragment {
     private String groupName;
     private Timer timer;
     public static boolean isTrackTimerOn = false;
+    private int send_payload_period;
 
     private HashMap<String, ArrayList<Integer>> weightHashMap;
 
@@ -74,7 +75,8 @@ public class TrackFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hashMap = new HashMap<>();
-        timer = new Timer(sendPayloadTask, "TrackThread", Constants.SEND_PAYLOAD_PERIOD, false);
+        send_payload_period = getActivity().getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).getInt(Constants.SEND_PAYLOAD_PERIOD_NAME, Constants.SEND_PAYLOAD_PERIOD);
+        timer = new Timer(sendPayloadTask, "TrackThread", send_payload_period, false);
         weightHashMap = new HashMap<>();
 
     }
@@ -192,7 +194,6 @@ public class TrackFragment extends Fragment {
         public void run() {
             log(Thread.currentThread().getName());
             MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
             try {
                 JSONObject wifiResults;
                 JSONArray wifiResultsArray = new JSONArray();
@@ -270,7 +271,7 @@ public class TrackFragment extends Fragment {
         ArrayList<Integer> resArr = new ArrayList<>();
         ArrayList<Integer> arrayList = new ArrayList<>();
 
-        for (String s : weightHashMap.keySet()){
+        for (String s : weightHashMap.keySet()) {
             log("weightHashMap : " + s + " " + Arrays.toString(weightHashMap.get(s).toArray()));
         }
 
@@ -279,7 +280,7 @@ public class TrackFragment extends Fragment {
                 resArr.add(maxIdx);
             }
             resArr.add(0, median);
-        }else {
+        } else {
             arrayList = new ArrayList<>(weightHashMap.get(mac));
             arrSize = arrayList.size();
             resArr = new ArrayList<>(arrayList.subList(0, arrSize - 1));
@@ -288,7 +289,7 @@ public class TrackFragment extends Fragment {
         weightHashMap.put(mac, resArr);
 
         for (int i = 0; i < WEIGHTED_AVERAGE_LIST_SIZE; i++) {
-            if(resArr.get(i) != maxIdx) {
+            if (resArr.get(i) != maxIdx) {
                 wightSum = wightSum + Constants.weightArr[i];
                 res = res + resArr.get(i) * Constants.weightArr[i];
             }

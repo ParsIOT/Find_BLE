@@ -72,6 +72,7 @@ public class LearnFragment extends Fragment {
     private String strGroup;
     private int learnIntervalVal;
     private int learnPeriodVal;
+    private int how_many_learning;
     private String dialogMsg = "Please wait while we are collecting the Wifi APs around you...\nmsgCounter is : ";
 
     private WebView mWebView;
@@ -114,6 +115,7 @@ public class LearnFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        how_many_learning = getActivity().getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE).getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -429,7 +431,7 @@ public class LearnFragment extends Fragment {
         this.hashMap = new HashMap<>(hashMap2);
         for (String s : hashMap2.keySet())
             Log.d(TAG, "onBeaconReceive: " + s + " : " + hashMap2.get(s));
-        if (msgSentCounter <= Constants.HOW_MANY_LEARNING_DEFAULT && isLearningAllowed){
+        if (msgSentCounter <= how_many_learning && isLearningAllowed){
             handler.post(runnableCode);
         }else{
             isLearningAllowed = false;

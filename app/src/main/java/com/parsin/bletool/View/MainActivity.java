@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int BLUETOOTH_ENABLE_REQUEST_ID = 10;
     private static final int WEIGHTED_AVERAGE_LIST_SIZE = 3;
-    private final int weight_arr[] = {1, 3, 10};
+    private int how_many_scan;
+    private int one_scan_period;
 
     NavigationView navigationView;
 
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity
     private BeaconManager beaconManager;
     private int altBeaconCounter = 0;
     private HashMap<String, ArrayList<Integer>> hashMap;
-    private HashMap<String, ArrayList<Integer>> weightedHashMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity
         // Calling function to set some default values if its our first run
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, 0);
         StaticObjects.ParsinServerIp = sharedPreferences.getString(StaticObjects.PARSIN_SERVER_NAME, StaticObjects.ParsinServerIp);
+        how_many_scan = sharedPreferences.getInt(Constants.HOW_MANY_SCAN_NAME, Constants.HOW_MANY_SCAN);
+        one_scan_period = sharedPreferences.getInt(Constants.ONE_SCAN_PERIOD_NAME, Constants.ONE_SCAN_PERIOD);
         setDefaultPrefs();
 /*
         // Set the Learn Fragment as default
@@ -114,7 +116,6 @@ public class MainActivity extends AppCompatActivity
         } else setupViewPagerView();
 
         hashMap = new HashMap<>();
-        weightedHashMap = new HashMap<>();
         setupAltBeacon();
 
     }
@@ -135,8 +136,9 @@ public class MainActivity extends AppCompatActivity
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-21v"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=00,p:3-3:-41,i:4-13,i:14-19"));
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("s:0-1=feaa,m:2-2=10,p:3-3:-41,i:4-20v"));
-        beaconManager.setForegroundScanPeriod(Constants.ONE_SCAN_PERIOD);
-        beaconManager.setBackgroundScanPeriod(Constants.ONE_SCAN_PERIOD);
+
+        beaconManager.setForegroundScanPeriod(one_scan_period);
+        beaconManager.setBackgroundScanPeriod(one_scan_period);
 
     }
 
@@ -297,12 +299,9 @@ public class MainActivity extends AppCompatActivity
                             arrayList.add(beacon.getRssi());
                             hashMap.put(beacon.getBluetoothAddress(), arrayList);
                         }
-                        Log.d(TAG, "didRangeBeaconsInRegion: name -> " + beacon.getBluetoothName() +
-                                " RSSI ->" + beacon.getRssi());
                     }
-                    if (altBeaconCounter >= Constants.HOW_MANY_SCAN) {
+                    if (altBeaconCounter >= how_many_scan) {
 //                        handler.post(runnableCode);
-                        Log.d(TAG, "didRangeBeaconsInRegion: eventbus want post sth");
                       /*  int weightedRes = 0;
                         int weight_sum = Utils.getSum(weight_arr);
                         for (String s: hashMap.keySet()){
@@ -330,7 +329,7 @@ public class MainActivity extends AppCompatActivity
                         hashMap.clear();
                     }
                 }
-                Log.d(TAG, "beacon: size -> " );
+                Log.d(TAG, "beacon: size -> ");
             }
 
         });
@@ -390,7 +389,6 @@ public class MainActivity extends AppCompatActivity
     public void onDestroy() {
         super.onDestroy();
     }
-
 
 
 }
