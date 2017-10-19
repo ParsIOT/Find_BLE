@@ -21,7 +21,11 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.parsin.bletool.Model.Advertisement;
 import com.parsin.bletool.R;
+import com.parsin.bletool.Utils.AdvertiseManager;
+import com.parsin.bletool.Utils.Server.ParsinServer;
+import com.parsin.bletool.Utils.Server.SendOptionEnum;
 import com.parsin.bletool.Utils.Timer;
 import com.parsin.bletool.Utils.Utils;
 import com.parsin.bletool.internal.Constants;
@@ -63,6 +67,8 @@ public class TrackFragment extends Fragment {
     private Timer timer;
     public static boolean isTrackTimerOn = false;
     private int send_payload_period;
+    private String guess_algorithm;
+    private AdvertiseManager advertiseManager;
 
     private HashMap<String, ArrayList<Integer>> weightHashMap;
 
@@ -96,6 +102,7 @@ public class TrackFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
         groupName = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
         userName = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
+        guess_algorithm = sharedPreferences.getString(Constants.ALGORITHM_NAME, Constants.DEFAULT_ALGORITHM);
 
         mButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -108,6 +115,14 @@ public class TrackFragment extends Fragment {
             }
         });
         EventBus.getDefault().register(this);
+
+
+
+        advertiseManager = AdvertiseManager.getInstance();
+        advertiseManager.init(getActivity());
+
+
+
         return rootView;
     }
 
@@ -118,6 +133,7 @@ public class TrackFragment extends Fragment {
         if (isVisibleToUser) {
             if (getActivity() != null) {
                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.PREFS_NAME, 0);
+                guess_algorithm = sharedPreferences.getString(Constants.ALGORITHM_NAME, Constants.DEFAULT_ALGORITHM);
                 groupName = sharedPreferences.getString(Constants.GROUP_NAME, Constants.DEFAULT_GROUP);
                 userName = sharedPreferences.getString(Constants.USER_NAME, Constants.DEFAULT_USERNAME);
                 if (!EventBus.getDefault().isRegistered(this))
@@ -236,9 +252,10 @@ public class TrackFragment extends Fragment {
                         Log.d(TAG, body);
                         try {
                             JSONObject json = new JSONObject(body);
-                            currLocation = json.getString("knn");
+                            currLocation = json.getString(guess_algorithm);
                             updateMap(currLocation);
-                            log("currLocation : " + currLocation);
+                            advertiseManager.checkAndShowAds(currLocation, getActivity());
+                            log("currLocation : " + currLocation + " guess_alg: " + guess_algorithm);
                         } catch (JSONException e) {
                             Log.e(TAG, "Failed to extract location from response: " + body, e);
                         }
@@ -251,15 +268,17 @@ public class TrackFragment extends Fragment {
     };
 
     private void updateMap(String currLocation) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                currLocTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.currentLocationColor));
-                currLocTextView.setText(currLocation);
-                String js_location = String.format("javascript:update_map(\'%s\')", currLocation);
-                mWebView.loadUrl(js_location);
-            }
-        });
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    currLocTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.currentLocationColor));
+                    currLocTextView.setText(currLocation);
+                    String js_location = String.format("javascript:update_map(\'%s\')", currLocation);
+                    mWebView.loadUrl(js_location);
+                }
+            });
+        }
     }
 
     private int getRssiUpdateWeight(String mac, int median) {

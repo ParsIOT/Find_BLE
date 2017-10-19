@@ -5,12 +5,14 @@ package com.parsin.bletool.Utils;
  */
 
 import android.app.Application;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
 import com.parsin.bletool.Model.DaoMaster;
 import com.parsin.bletool.Model.DaoSession;
+import com.splunk.mint.Mint;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,16 +23,20 @@ public class MyApp extends Application {
 
 
     private DaoSession mDaoSession;
+    private Context gContext;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-        FontsOverride.setDefaultFont(this, "MONOSPACE", "Font/IRRoya.ttf");
-        FontsOverride.setDefaultFont(this, "DEFAULT", "Font/IRRoya.ttf");
-        //FontsOverride.setDefaultFont(this, "NORMAL", "Font/IRRoya.ttf");
-        FontsOverride.setDefaultFont(this, "SERIF", "Font/IRRoya.ttf");
-        FontsOverride.setDefaultFont(this, "SANS_SERIF", "Font/IRRoya.ttf");
-        //FontsOverride.setDefaultFont(this, "SANS", "Font/IRRoya.ttf");
+        gContext = getApplicationContext();
+        Mint.initAndStartSession(this, "577120a0");
+        FontsOverride.setDefaultFont(this, "MONOSPACE", "Fonts/IRRoya.ttf");
+        FontsOverride.setDefaultFont(this, "DEFAULT", "Fonts/IRRoya.ttf");
+        //FontsOverride.setDefaultFont(this, "NORMAL", "Fonts/IRRoya.ttf");
+        FontsOverride.setDefaultFont(this, "SERIF", "Fonts/IRRoya.ttf");
+        FontsOverride.setDefaultFont(this, "SANS_SERIF", "Fonts/IRRoya.ttf");
+        //FontsOverride.setDefaultFont(this, "SANS", "Fonts/IRRoya.ttf");
         Log.e("APP", "SALAM");
 
         mDaoSession = new DaoMaster(
@@ -41,6 +47,10 @@ public class MyApp extends Application {
 
     public DaoSession getDaoSession() {
         return mDaoSession;
+    }
+
+    public Context getAppContext(){
+        return this.gContext;
     }
 
 

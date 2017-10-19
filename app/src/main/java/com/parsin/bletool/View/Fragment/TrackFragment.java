@@ -264,7 +264,7 @@ public class TrackFragment extends Fragment {
             Log.d("your location:", currLocation);
 
 
-            notifying();
+//            notifying();
 
             //Log.e("TRACK", currLocation);
             if (!strPreLocation.equals(currLocation)) {
@@ -284,7 +284,7 @@ public class TrackFragment extends Fragment {
         }
     };
 
-    private void notifying() {
+   /* private void notifying() {
         if (!strPreLocation.equals("")) {
             if (strPreLocation.equals(currLocation)) {
                 if (trackCounterAdv <= 0) {
@@ -305,7 +305,7 @@ public class TrackFragment extends Fragment {
             } else
                 trackCounterAdv = trackNotifyTRESH;
         }
-    }
+    }*/
 
     private Runnable runnableCode = new Runnable() {
         @Override
@@ -397,8 +397,8 @@ public class TrackFragment extends Fragment {
                 //ATTENTION: commented for using Altbeacon.
                 LocalBroadcastManager.getInstance(mContext).registerReceiver(mMessageReceiver,
                         new IntentFilter(Constants.TRACK_BCAST));
-                parsin.getAdvJSON(strParsinServer +
-                        SendOptionEnum.Get_Advertisement.url(), advertisements);
+/*                parsin.getAdvJSON(strParsinServer +
+                        SendOptionEnum.Get_Advertisement.url(), advertisements);*/
             }
         }
     }
@@ -558,7 +558,7 @@ public class TrackFragment extends Fragment {
     }
 
     @Subscribe
-    public void onBeaconReceive(HashMap<String, ArrayList<Integer>> hashMap2){
+    public void onBeaconReceive(HashMap<String, ArrayList<Integer>> hashMap2) {
         Log.d(TAG, "onBeaconReceive: this is for test :" + hashMap2.size());
         this.hashMap = new HashMap<>(hashMap2);
         for (String s : hashMap2.keySet())

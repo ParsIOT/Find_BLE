@@ -9,6 +9,7 @@ public class Constants {
 //    public static double[] weightArr = {0.1995, 0.1760, 0.1210, 0.0648, 0.027, 0.005};
     public static double[] weightArr = {0.1995, 0.1760, 0.1210};
     private static final String PACKAGE_NAME = "om.find.wifitool";
+    public static final String[] algorithms = {"knn", "bayes", "svm", "rf"};
 
     // Shared prefs
     public static final String PREFS_NAME = PACKAGE_NAME + "com.find.wifitool.Prefs";
@@ -26,12 +27,17 @@ public class Constants {
     public static final String HOW_MANY_SCAN_NAME = PACKAGE_NAME + "howManyScan";
     public static final String HOW_MANY_LEARNING_NAME = PACKAGE_NAME + "howManyLearning";
     public static final String SEND_PAYLOAD_PERIOD_NAME = PACKAGE_NAME + "SendPayloadPeriod";
+    public static final String ALGORITHM_NAME = PACKAGE_NAME + "algorithmName";
+    public static final String ADVERTISE_URL_NAME = PACKAGE_NAME + "advertiseUrlName";
     //Default values
     public static final String DEFAULT_USERNAME = "hadi";
 
     public static String DEFAULT_GROUP =  "arman3";
     public static String DEFAULT_SERVER = "http://104.237.255.199:18003/";
+    public static String ADVERTISE_URL_DEFAULT = "http://104.237.255.199:18000";
+
     public static String DEFAULT_LOCATION_NAME = "location";
+    public static String DEFAULT_ALGORITHM = "knn";
     public static int DEFAULT_TRACKING_INTERVAL = 3;
     public static int DEFAULT_LEARNING_INTERVAL = 3;
     public static int DEFAULT_TRACKING_COUNTER = 30;

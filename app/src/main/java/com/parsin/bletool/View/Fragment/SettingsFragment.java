@@ -54,6 +54,8 @@ public class SettingsFragment extends Fragment {
     private TextView fieldHowManyLearning;
     private TextView labelSendPayloadPeriod;
     private TextView fieldSendPayloadPeriod;
+    private TextView labelAlgorithm;
+    private TextView fieldAlgorithm;
 
 
     private SharedPreferences sharedPreferences;
@@ -68,6 +70,7 @@ public class SettingsFragment extends Fragment {
     private int prefHowManyScan;
     private int prefHowManyLearning;
     private int prefSendPayloadPeriod;
+    private String prefAlgorithm;
 
 
 
@@ -113,7 +116,7 @@ public class SettingsFragment extends Fragment {
         prefHowManyScan = sharedPreferences.getInt(Constants.HOW_MANY_SCAN_NAME, Constants.HOW_MANY_SCAN);
         prefHowManyLearning = sharedPreferences.getInt(Constants.HOW_MANY_LEARNING_NAME, Constants.HOW_MANY_LEARNING);
         prefSendPayloadPeriod = sharedPreferences.getInt(Constants.SEND_PAYLOAD_PERIOD_NAME, Constants.SEND_PAYLOAD_PERIOD);
-
+        prefAlgorithm = sharedPreferences.getString(Constants.ALGORITHM_NAME, Constants.DEFAULT_ALGORITHM);
     }
 
     @Override
@@ -143,9 +146,32 @@ public class SettingsFragment extends Fragment {
         fieldHowManyLearning = (TextView) rootView.findViewById(R.id.fieldHowManyLearning);
         labelSendPayloadPeriod = (TextView) rootView.findViewById(R.id.labelSendPayloadPeriod);
         fieldSendPayloadPeriod = (TextView) rootView.findViewById(R.id.fieldSendPayloadPeriod);
+        labelAlgorithm = (TextView) rootView.findViewById(R.id.labelAlgorithm);
+        fieldAlgorithm = (TextView) rootView.findViewById(R.id.fieldAlgorithm);
 
         // Rendering the setting page
         drawUi();
+
+
+        labelAlgorithm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setItems(Constants.algorithms, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String str = Constants.algorithms[which];
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(Constants.ALGORITHM_NAME, str);
+                        fieldAlgorithm.setText(str);
+                        Constants.DEFAULT_ALGORITHM = str;
+                        editor.apply();
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         labelSendPayloadPeriod.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -592,6 +618,7 @@ public class SettingsFragment extends Fragment {
 
         fieldHowManyLearning.setText(String.valueOf(prefHowManyLearning));
 
+        fieldAlgorithm.setText(prefAlgorithm);
 
 
     }

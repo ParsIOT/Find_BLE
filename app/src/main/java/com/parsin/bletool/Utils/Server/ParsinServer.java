@@ -115,68 +115,6 @@ public class ParsinServer implements Observable {
     }
 
 
-    public void getAdvJSON(String url, ArrayList<Advertisement> advertisements) {
-        OkHttpClient client = new OkHttpClient();
-        // GET request
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                final String mMessage = request.toString();
-                Log.e("resJSONError1", mMessage);
-                Log.e("getAdvJSON", "3");
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                String resJSONreq = response.body().string();
-                Log.d("resJSONParser:", resJSONreq);
-                try {
-                    JSONArray advertisementsArray = new JSONObject(resJSONreq).getJSONArray("advertisements");
-                    for (int i = 0; i < advertisementsArray.length(); i++) {
-                        JSONObject advertisementJson = advertisementsArray.getJSONObject(i);
-//                        Advertisement advertisementObj;
-                        String advrName = advertisementJson.getString("name");
-                        String advrText = advertisementJson.getString("text");
-                        String advrImg = advertisementJson.getString("image");
-                        int advrId = advertisementJson.getInt("id");
-
-                        Log.d("Advertisment Name:", advrName);
-                        Log.d("Advertisment Text:", advrText);
-
-                        JSONArray advrSections = advertisementJson.getJSONArray("sections");
-
-                        Advertisement advertisement = new Advertisement(advrId, advrName, advrText, advrImg);
-
-                        for (int j = 0; j < advrSections.length(); j++) {
-                            JSONObject sectionJson = advrSections.getJSONObject(j);
-                            String sectionName = sectionJson.getString("section_name");
-
-                            float x1 = Float.parseFloat(sectionJson.getString("t_x"));
-                            float y1 = Float.parseFloat(sectionJson.getString("t_y"));
-                            float x2 = Float.parseFloat(sectionJson.getString("b_x"));
-                            float y2 = Float.parseFloat(sectionJson.getString("b_y"));
-                            Section section = new Section(sectionName, x1, y1, x2, y2);
-
-                            advertisement.addSection(section);
-
-                        }
-                        advertisements.add(advertisement);
-                    }
-
-                } catch (Exception e) {
-                    Log.e("JSONParsing", e.getMessage());
-                }
-            }
-
-
-        });
-
-    }
-
-
     @Override
     public void register(Observer obj) {
         if (obj == null) throw new NullPointerException("Null Observer");

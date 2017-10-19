@@ -1,7 +1,9 @@
 package com.parsin.bletool.View;
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,6 +21,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity
 
         hashMap = new HashMap<>();
         setupAltBeacon();
+
 
     }
 
@@ -388,6 +392,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public void showNotif() {
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this);
+        b.setAutoCancel(true)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_action_info)
+                .setTicker("{your tiny message}")
+                .setPriority(android.support.v7.app.NotificationCompat.PRIORITY_HIGH)
+                .setContentTitle("this is title")
+                .setContentInfo("");
+
+
+        b.setContentText("salam shamgholi");
+        NotificationManager nm = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1, b.build());
     }
 
 

@@ -13,7 +13,7 @@ public class Advertisement {
     private String img;
     private ArrayList<Section> sections;
 
-    public Advertisement(int id, String title, String text,String img) {
+    public Advertisement(int id, String title, String text, String img) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -32,9 +32,11 @@ public class Advertisement {
     public String getText() {
         return text;
     }
+
     public String getImg() {
         return img;
     }
+
     public ArrayList<Section> getSections() {
         return sections;
     }
@@ -46,7 +48,6 @@ public class Advertisement {
     public void setSections(ArrayList<Section> sections) {
         this.sections = sections;
     }
-
 
 
 }

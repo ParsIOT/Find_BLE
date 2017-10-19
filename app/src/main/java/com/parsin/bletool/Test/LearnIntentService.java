@@ -84,7 +84,6 @@ public class LearnIntentService extends IntentService {
                     wifiResults.put("rssi", median);
                     wifiResultsArray.put(wifiResults);
                 }
-                log("\n");
                 wifiFingerprint = new JSONObject();
                 wifiFingerprint.put("group", groupName);
                 wifiFingerprint.put("username", userName);
@@ -129,7 +128,7 @@ public class LearnIntentService extends IntentService {
             OkHttpClient client = new OkHttpClient();
             RequestBody body = RequestBody.create(JSON, String.valueOf(resJson));
             Request request = new Request.Builder()
-                    .url(Constants.DEFAULT_SERVER + "bulklearn")
+                    .url(strServer + "bulklearn")
                     .post(body)
                     .build();
             client.newCall(request).enqueue(new Callback() {
