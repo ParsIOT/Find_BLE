@@ -12,6 +12,7 @@ public class Advertisement {
     private String text;
     private String img;
     private ArrayList<Section> sections;
+    private int regionCounter;
 
     public Advertisement(int id, String title, String text, String img) {
         this.id = id;
@@ -19,6 +20,7 @@ public class Advertisement {
         this.text = text;
         this.img = img;
         this.sections = new ArrayList<>();
+        this.regionCounter = 0;
     }
 
     public int getId() {
@@ -50,4 +52,11 @@ public class Advertisement {
     }
 
 
+    public int getRegionCounter() {
+        return regionCounter;
+    }
+
+    public void setRegionCounter(int regionCounter) {
+        this.regionCounter = regionCounter;
+    }
 }

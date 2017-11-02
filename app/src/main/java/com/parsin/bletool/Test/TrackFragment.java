@@ -117,10 +117,8 @@ public class TrackFragment extends Fragment {
         EventBus.getDefault().register(this);
 
 
-
         advertiseManager = AdvertiseManager.getInstance();
         advertiseManager.init(getActivity());
-
 
 
         return rootView;

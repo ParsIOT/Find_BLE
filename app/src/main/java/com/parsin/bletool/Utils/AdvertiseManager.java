@@ -32,18 +32,19 @@ import okhttp3.Response;
  */
 
 public class AdvertiseManager {
+    private static final int ADS_REGION_THRESH = 3;
     private String url = "";
     private static AdvertiseManager ourInstance = null;
     private final String TAG = AdvertiseManager.class.getSimpleName();
     private ArrayList<Advertisement> advertisements;
     private ArrayList<Advertisement> shownAds;
 
+
     public static AdvertiseManager getInstance() {
         if (ourInstance == null)
             ourInstance = new AdvertiseManager();
         return ourInstance;
     }
-
 
     private AdvertiseManager() {
         advertisements = new ArrayList<>();
@@ -62,13 +63,16 @@ public class AdvertiseManager {
             float x_y[] = getIntXY(currLocation);
             for (Advertisement ads : advertisements) {
                 if (inSquare(x_y[0], x_y[1], ads) && !shownAds.contains(ads)) {
-                    sendNotification(ads.getId(), ads.getTitle(), ads.getText(), ads.getImg(), context);
-                    shownAds.add(ads);
+                    if (ads.getRegionCounter() >= ADS_REGION_THRESH){
+                        sendNotification(ads.getId(), ads.getTitle(), ads.getText(), ads.getImg(), context);
+                        shownAds.add(ads);
+                    }else {
+                        ads.setRegionCounter(ads.getRegionCounter() + 1);
+                    }
                 }
             }
         }).start();
     }
-
 
     private void getAdvJSON(String url) {
         OkHttpClient client = new OkHttpClient();
@@ -136,19 +140,6 @@ public class AdvertiseManager {
         Log.e("inSquare", "False");
         return false;
     }
-
-/*    private void notifying() {
-
-        for (Advertisement advertisement : advertisements) {
-            Log.d("resJSONreqFull", "resJSONreqx");
-            float x_y[] = getIntXY(currLocation);
-            if (inSquare(x_y[0], x_y[1], advertisement)) {
-                Log.d("Notification adv :", advertisement.getTitle());
-                sendNotification(advertisement.getId(), advertisement.getTitle(), advertisement.getText(), advertisement.getImg(), mContext);
-
-            }
-        }
-    }*/
 
     private void sendNotification(int advId, String title, String message, String imgUrl, Context context) {
         new Thread(() -> {
