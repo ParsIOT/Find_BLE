@@ -23,24 +23,25 @@
 
 	var map = L.map('map', {
 		crs: L.CRS.Simple,
-		minZoom: -3
+		minZoom: -4
 	});
 
 	//var bounds = [[-400, -300], [400, 300]];
-	var bounds = [[-1200, -1800], [1200, 1800]];
+	var bounds = [[-1700, -1800], [1700, 1800]];
 	var image = L.imageOverlay('img/test-map.png', bounds).addTo(map);
 
 
 
 	map.setView([0, 0], 0);
 	latlng = [-400, -750];
-	var marker = L.userMarker(latlng, {pulsing: true, accuracy: 100, smallIcon: true});
+	var marker = L.userMarker(latlng, {pulsing: true, accuracy: 300, smallIcon: true});
 	marker.addTo(map);
 
 
 	map.on('click', function (e) {
-		console.log(e.latlng.lng + "," + e.latlng.lat);
-		var retVar = e.latlng.lng + "," + e.latlng.lat;
+		console.log(e.latlng.lat + "," + e.latlng.lng);
+		var retVar = e.latlng.lat + "," + e.latlng.lng;
+		//var retVar = e.latlng.lng + "," + e.latlng.lat;
 		Android.sendToAndroid(retVar);
 	});
 	marker.on('click', function marketOnClick(e) {
@@ -49,12 +50,12 @@
 	});
 
 
-    var grid = new L.GridToolbar(latlng, 2,
+    var grid = new L.GridToolbar(latlng, 1,
         {   mode:'indoor',
             scale: false,
             rotate: false,
-            width: 32,
-            height: 20}
+            width: 62,//32
+            height: 40}//20
     ).addTo(map);
 
 
@@ -66,6 +67,7 @@
 		console.log(match);
 		var x = match[1];
 		var y = match[2];
+
 		marker.slideTo([x, y], {
 			duration: 1000,
 			keepAtCenter: false
